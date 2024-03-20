@@ -6,6 +6,7 @@ namespace SpreadsheetEngine
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -15,6 +16,19 @@ namespace SpreadsheetEngine
     /// </summary>
     public class OperatorFactory
     {
+        private static readonly Dictionary<char, Func<char, OperatorNode>> RegisteredOperators = new Dictionary<char, Func<char, OperatorNode>>();
+
+        /// <summary>
+        /// Initializes static members of the <see cref="OperatorFactory"/> class. It also registers all existing operators into the system.
+        /// </summary>
+        static OperatorFactory()
+        {
+            RegisterOperator('+', op => new AddOpNode(op));
+            RegisterOperator('-', op => new SubtractOpNode(op));
+            RegisterOperator('*', op => new MultiplyOpNode(op));
+            RegisterOperator('/', op => new DivideOpNode(op));
+        }
+
         /// <summary>
         /// Determines the correct type of node based on the operator.
         /// </summary>
@@ -22,14 +36,25 @@ namespace SpreadsheetEngine
         /// <param name="op">The operator character.</param>
         public static OperatorNode CreateOperatorNode(char op)
         {
-            switch (op)
+            if (RegisteredOperators.TryGetValue(op, out var creator))
             {
-                case '+': return new AddOpNode(op);
-                case '-': return new SubtractOpNode(op);
-                case '*': return new MultiplyOpNode(op);
-                case '/': return new DivideOpNode(op);
-                default: throw new NotSupportedException("This operator is not supported!");
+                return creator(op);
             }
+            else
+            {
+                throw new NotSupportedException("This operator is not supported!");
+            }
+        }
+
+        /// <summary>
+        /// Registers operators supported in the program to be used later.
+        /// </summary>
+        /// <param name="op">The operator character.</param>
+        /// <param name="creator">.</param>
+
+        private static void RegisterOperator(char op, Func<char, OperatorNode> creator)
+        {
+            RegisteredOperators.Add(op, creator);
         }
     }
 }
