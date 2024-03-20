@@ -61,23 +61,29 @@ namespace SpreadsheetEngine
             return this.rootNode?.Evaluate() ?? 0;
         }
 
+        /// <summary>
+        /// Determine if the character is an operator value supported.
+        /// </summary>
+        /// <returns>A true or false boolean if it is an operator or not.</returns>
         private static bool IsOperator(char ch)
         {
             return ch == '+' || ch == '-' || ch == '*' || ch == '/';
         }
 
+        /// <summary>
+        /// Uses the operator to create an appropriate node for it.
+        /// </summary>
+        /// <returns>The newly created type of OperatorNode.</returns>
         private static OperatorNode CreateOperatorNode(char op)
         {
-            switch (op)
-            {
-                case '+': return new AddOpNode(op);
-                case '-': return new SubtractOpNode(op);
-                case '*': return new MultiplyOpNode(op);
-                case '/': return new DivideOpNode(op);
-                default: throw new Exception("Invalid operator");
-            }
+            OperatorFactory factory = new OperatorFactory();
+            return OperatorFactory.CreateOperatorNode(op);
         }
 
+        /// <summary>
+        /// Pops the operands from the expression tree and evaluates them.
+        /// </summary>
+        /// <returns>The evaluated OperatorNode.</returns>
         private static OperatorNode PopAndEvaluate(Stack<OperatorNode> operators, Stack<Node> operands)
         {
             OperatorNode op = operators.Pop();
@@ -89,6 +95,10 @@ namespace SpreadsheetEngine
             return op;
         }
 
+        /// <summary>
+        /// Construct the expression tree based off of the input expression.
+        /// </summary>
+        /// <returns>The new root node in the expression tree.</returns>
         private Node? ConstructTree(string expression)
         {
             Stack<Node> operands = new Stack<Node>();
@@ -114,8 +124,8 @@ namespace SpreadsheetEngine
                 // Check to see if the character is an operator
                 if (IsOperator(ch))
                 {
-                    // Revised precedence logic
-                    OperatorNode opNode = CreateOperatorNode(ch); // Creation of operator node
+                    // Determine precedence
+                    OperatorNode opNode = CreateOperatorNode(ch);
 
                     while (operators.Count > 0 && operators.Peek().Precedence >= opNode.Precedence)
                     {
