@@ -66,7 +66,7 @@ namespace SpreadsheetEngine
             return ch == '+' || ch == '-' || ch == '*' || ch == '/';
         }
 
-        private OperatorNode CreateOperatorNode(char op)
+        private static OperatorNode CreateOperatorNode(char op)
         {
             switch (op)
             {
@@ -78,7 +78,7 @@ namespace SpreadsheetEngine
             }
         }
 
-        private Node PopAndEvaluate(Stack<OperatorNode> operators, Stack<Node> operands)
+        private static OperatorNode PopAndEvaluate(Stack<OperatorNode> operators, Stack<Node> operands)
         {
             OperatorNode op = operators.Pop();
             Node right = operands.Pop();
@@ -115,11 +115,11 @@ namespace SpreadsheetEngine
                 if (IsOperator(ch))
                 {
                     // Revised precedence logic
-                    OperatorNode opNode = this.CreateOperatorNode(ch); // Creation of operator node
+                    OperatorNode opNode = CreateOperatorNode(ch); // Creation of operator node
 
                     while (operators.Count > 0 && operators.Peek().Precedence >= opNode.Precedence)
                     {
-                        operands.Push(this.PopAndEvaluate(operators, operands));
+                        operands.Push(PopAndEvaluate(operators, operands));
                     }
 
                     operators.Push(opNode);
