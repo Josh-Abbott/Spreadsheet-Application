@@ -20,6 +20,12 @@ namespace SpreadsheetEngine
         private Node? right;
 
         /// <summary>
+        /// Gets or sets the assigned precedence value for each operation.
+        /// </summary>
+        public int Precedence { get; set; }
+
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="OperatorNode"/> class.
         /// </summary>
         /// <param name="op">The operator character.</param>

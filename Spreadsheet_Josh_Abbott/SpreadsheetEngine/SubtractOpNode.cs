@@ -22,6 +22,7 @@ namespace SpreadsheetEngine
         public SubtractOpNode(char op)
             : base(op)
         {
+            this.Precedence = 1;
         }
 
         /// <summary>

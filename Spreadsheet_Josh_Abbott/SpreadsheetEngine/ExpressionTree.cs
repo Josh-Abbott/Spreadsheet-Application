@@ -66,37 +66,33 @@ namespace SpreadsheetEngine
             return ch == '+' || ch == '-' || ch == '*' || ch == '/';
         }
 
-        private static bool HasHigherPrecedence(char op1, char op2)
+        private OperatorNode CreateOperatorNode(char op)
         {
-            int precedence1 = (op1 == '*' || op1 == '/') ? 2 : 1;
-            int precedence2 = (op2 == '*' || op2 == '/') ? 2 : 1;
-            return precedence1 >= precedence2;
-        }
-
-        private static Node PopAndEvaluate(Stack<char> operators, Stack<Node> operands)
-        {
-            char op = operators.Pop();
-            Node right = operands.Pop();
-            Node left = operands.Pop();
             switch (op)
             {
-                case '+':
-                    return new AddOpNode(op) { Left = left, Right = right };
-                case '-':
-                    return new SubtractOpNode(op) { Left = left, Right = right };
-                case '*':
-                    return new MultiplyOpNode(op) { Left = left, Right = right };
-                case '/':
-                    return new DivideOpNode(op) { Left = left, Right = right };
-                default:
-                    throw new Exception("Invalid operator");
+                case '+': return new AddOpNode(op);
+                case '-': return new SubtractOpNode(op);
+                case '*': return new MultiplyOpNode(op);
+                case '/': return new DivideOpNode(op);
+                default: throw new Exception("Invalid operator");
             }
+        }
+
+        private Node PopAndEvaluate(Stack<OperatorNode> operators, Stack<Node> operands)
+        {
+            OperatorNode op = operators.Pop();
+            Node right = operands.Pop();
+            Node left = operands.Pop();
+            op.Right = right;
+            op.Left = left;
+
+            return op;
         }
 
         private Node? ConstructTree(string expression)
         {
             Stack<Node> operands = new Stack<Node>();
-            Stack<char> operators = new Stack<char>();
+            Stack<OperatorNode> operators = new Stack<OperatorNode>();
 
             // Loop through the length of the expression to identify each component and construct the tree.
             for (int i = 0; i < expression.Length; i++)
@@ -118,13 +114,15 @@ namespace SpreadsheetEngine
                 // Check to see if the character is an operator
                 if (IsOperator(ch))
                 {
-                    // If the character is an operator, check precedence via a loop
-                    while (operators.Count > 0 && IsOperator(operators.Peek()) && HasHigherPrecedence(ch, operators.Peek()))
+                    // Revised precedence logic
+                    OperatorNode opNode = this.CreateOperatorNode(ch); // Creation of operator node
+
+                    while (operators.Count > 0 && operators.Peek().Precedence >= opNode.Precedence)
                     {
-                        operands.Push(PopAndEvaluate(operators, operands));
+                        operands.Push(this.PopAndEvaluate(operators, operands));
                     }
 
-                    operators.Push(ch);
+                    operators.Push(opNode);
                 }
 
                 // Check to see if the character is a number

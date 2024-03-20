@@ -22,6 +22,7 @@ namespace SpreadsheetEngine
         public DivideOpNode(char op)
             : base(op)
         {
+            this.Precedence = 2;
         }
 
         /// <summary>
