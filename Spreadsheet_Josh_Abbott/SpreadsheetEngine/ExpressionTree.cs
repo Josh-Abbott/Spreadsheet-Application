@@ -112,8 +112,21 @@ namespace SpreadsheetEngine
                     throw new NotSupportedException("Unsupported operator!");
                 }
 
-                // Check to see if the character is an operator
-                if (OperatorFactory.RegisteredOperators.ContainsKey(ch))
+                if (ch == '(') // Push opening parenthesis to indicate start
+                {
+                    operators.Push(new ParenthesisOpNode('('));
+                }
+                else if (ch == ')')
+                {
+                    // Process operators that exist within the parentheses
+                    while (operators.Peek().Operation != '(')
+                    {
+                        operands.Push(PopAndEvaluate(operators, operands));
+                    }
+
+                    operators.Pop(); // Remove the opening parenthesis
+                }
+                else if (OperatorFactory.RegisteredOperators.ContainsKey(ch)) // Check to see if the character is an operator
                 {
                     // Determine precedence
                     OperatorNode opNode = CreateOperatorNode(ch);

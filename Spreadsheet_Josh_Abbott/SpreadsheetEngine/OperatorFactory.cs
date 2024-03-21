@@ -16,6 +16,9 @@ namespace SpreadsheetEngine
     /// </summary>
     public class OperatorFactory
     {
+        /// <summary>
+        /// A dictionary that holds all of the registered and hardcoded operators.
+        /// </summary>
         public static readonly Dictionary<char, Func<char, OperatorNode>> RegisteredOperators = new Dictionary<char, Func<char, OperatorNode>>();
 
         /// <summary>
@@ -27,6 +30,8 @@ namespace SpreadsheetEngine
             RegisterOperator('-', op => new SubtractOpNode(op));
             RegisterOperator('*', op => new MultiplyOpNode(op));
             RegisterOperator('/', op => new DivideOpNode(op));
+            RegisterOperator('(', op => new ParenthesisOpNode(op));
+            RegisterOperator(')', op => new ParenthesisOpNode(op));
         }
 
         /// <summary>
