@@ -4,6 +4,7 @@
 
 namespace SpreadsheetEngine
 {
+    using System.Data;
     using System.Runtime.CompilerServices;
     using System.Security.Cryptography.X509Certificates;
 
@@ -122,6 +123,12 @@ namespace SpreadsheetEngine
                     while (operators.Peek().Operation != '(')
                     {
                         operands.Push(PopAndEvaluate(operators, operands));
+
+                        // Determine if there is an issue with the expression.
+                        if (operators.Count == 0)
+                        {
+                            throw new InvalidExpressionException("Invalid expression!");
+                        }
                     }
 
                     operators.Pop(); // Remove the opening parenthesis
