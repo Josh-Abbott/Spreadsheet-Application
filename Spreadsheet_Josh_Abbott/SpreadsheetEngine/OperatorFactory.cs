@@ -16,7 +16,7 @@ namespace SpreadsheetEngine
     /// </summary>
     public class OperatorFactory
     {
-        private static readonly Dictionary<char, Func<char, OperatorNode>> RegisteredOperators = new Dictionary<char, Func<char, OperatorNode>>();
+        public static readonly Dictionary<char, Func<char, OperatorNode>> RegisteredOperators = new Dictionary<char, Func<char, OperatorNode>>();
 
         /// <summary>
         /// Initializes static members of the <see cref="OperatorFactory"/> class. It also registers all existing operators into the system.
@@ -51,7 +51,6 @@ namespace SpreadsheetEngine
         /// </summary>
         /// <param name="op">The operator character.</param>
         /// <param name="creator">.</param>
-
         private static void RegisterOperator(char op, Func<char, OperatorNode> creator)
         {
             RegisteredOperators.Add(op, creator);

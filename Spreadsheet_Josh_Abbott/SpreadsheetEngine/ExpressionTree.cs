@@ -62,15 +62,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Determine if the character is an operator value supported.
-        /// </summary>
-        /// <returns>A true or false boolean if it is an operator or not.</returns>
-        private static bool IsOperator(char ch)
-        {
-            return ch == '+' || ch == '-' || ch == '*' || ch == '/';
-        }
-
-        /// <summary>
         /// Uses the operator to create an appropriate node for it.
         /// </summary>
         /// <returns>The newly created type of OperatorNode.</returns>
@@ -116,13 +107,13 @@ namespace SpreadsheetEngine
                 }
 
                 // Check if it's an unsupported operator
-                if (!char.IsNumber(ch) && !char.IsLetter(ch) && !IsOperator(ch) && !char.IsWhiteSpace(ch))
+                if (!char.IsNumber(ch) && !char.IsLetter(ch) && !OperatorFactory.RegisteredOperators.ContainsKey(ch) && !char.IsWhiteSpace(ch))
                 {
                     throw new NotSupportedException("Unsupported operator!");
                 }
 
                 // Check to see if the character is an operator
-                if (IsOperator(ch))
+                if (OperatorFactory.RegisteredOperators.ContainsKey(ch))
                 {
                     // Determine precedence
                     OperatorNode opNode = CreateOperatorNode(ch);
