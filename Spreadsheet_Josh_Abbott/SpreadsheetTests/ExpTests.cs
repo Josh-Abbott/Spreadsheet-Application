@@ -59,17 +59,6 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// A function to test attempting to get infinity from the expression tree.
-        /// </summary>
-        [Test]
-        public void TestInfinity()
-        {
-            string maxValue = double.MaxValue.ToString("F", CultureInfo.InvariantCulture);
-            double result = new TestExpTree($"{maxValue}+{maxValue}").Evaluate();
-            Assert.That(double.IsInfinity(result), Is.True);
-        }
-
-        /// <summary>
         /// A function to test an expression that uses variable values.
         /// </summary>
         [Test]

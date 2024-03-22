@@ -24,6 +24,7 @@ namespace SpreadsheetEngine
         public ExpressionTree(string expression)
         {
             this.expression = expression;
+            this.vars = new Dictionary<string, double>();
             this.rootNode = this.ConstructTree(expression);
         }
 
@@ -179,6 +180,11 @@ namespace SpreadsheetEngine
 
                     // Create a new VariableNode to store the letter
                     operands.Push(new VariableNode(varName, this.vars));
+
+                    if (!this.vars.ContainsKey(varName))
+                    {
+                        this.vars.Add(varName, 0);
+                    }
                 }
             }
 
