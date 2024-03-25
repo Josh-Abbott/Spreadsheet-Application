@@ -53,5 +53,35 @@ namespace SpreadsheetEngine.Tests
             Assert.Throws<NullReferenceException>(() =>
                 target.OnCellPropertyChanged(cell, new PropertyChangedEventArgs("Text")));
         }
+
+        /// <summary>
+        /// A test case to verify that cell editing is handled correctly when using formulas.
+        /// </summary>
+        [Test]
+        public void TestCellFormulaEditing()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell = spreadsheet.GetCell(0, 0);
+            cell.Text = "=2+5";
+
+            spreadsheet.BeginCellEdit(cell);
+
+            Assert.That(cell.Value, Is.EqualTo(cell.Text));
+        }
+
+        /// <summary>
+        /// A test case to verify that using a formula in a cell is correctly evaluated.
+        /// </summary>
+        [Test]
+        public void TestCellFormulaUpdating()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell = spreadsheet.GetCell(0, 0);
+            cell.Text = "=2+5";
+
+            spreadsheet.CalculateCell(cell);
+
+            Assert.That(cell.Value, Is.EqualTo("7"));
+        }
     }
 }
