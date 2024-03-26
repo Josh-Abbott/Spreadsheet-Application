@@ -114,6 +114,26 @@ namespace Spreadsheet_Josh_Abbott
         }
 
         /// <summary>
+        /// The function used to determine when the user begins editing a cell.
+        /// </summary>
+        /// <param name="sender">The object sent.</param>
+        /// <param name="e">The event related to the cell editing.</param>
+        private void BeginCellEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// The function used to determine when the user stops editing a cell.
+        /// </summary>
+        /// <param name="sender">The object sent.</param>
+        /// <param name="e">The event related to the cell editing.</param>
+        private void CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Triggered when the demo button is clicked to run it.
         /// </summary>
         private void Button1_Click(object sender, EventArgs e)

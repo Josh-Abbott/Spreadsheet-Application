@@ -55,33 +55,55 @@ namespace SpreadsheetEngine.Tests
         }
 
         /// <summary>
-        /// A test case to verify that cell editing is handled correctly when using formulas.
+        /// A normal case to verify that using a formula in a cell is correctly evaluated.
         /// </summary>
         [Test]
-        public void TestCellFormulaEditing()
+        public void CellFormulaUpdatingNorm()
         {
             var spreadsheet = new Spreadsheet(5, 5);
             var cell = spreadsheet.GetCell(0, 0);
-            cell.Text = "=2+5";
+            if (cell != null)
+            {
+                cell.Text = "=2+5";
 
-            spreadsheet.BeginCellEdit(cell);
+                spreadsheet.CalculateCell(cell);
 
-            Assert.That(cell.Value, Is.EqualTo(cell.Text));
+                Assert.That(cell.Value, Is.EqualTo("7"));
+            }
         }
 
         /// <summary>
-        /// A test case to verify that using a formula in a cell is correctly evaluated.
+        /// An edge case to verify that using a formula in a cell is correctly evaluated.
         /// </summary>
         [Test]
-        public void TestCellFormulaUpdating()
+        public void CellFormulaUpdatingEdge()
         {
             var spreadsheet = new Spreadsheet(5, 5);
             var cell = spreadsheet.GetCell(0, 0);
-            cell.Text = "=2+5";
+            if (cell != null)
+            {
+                cell.Text = string.Empty;
 
-            spreadsheet.CalculateCell(cell);
+                spreadsheet.CalculateCell(cell);
 
-            Assert.That(cell.Value, Is.EqualTo("7"));
+                Assert.That(cell.Value, Is.EqualTo(string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// An exception case to verify that using a formula in a cell is correctly evaluated.
+        /// </summary>
+        [Test]
+        public void CellFormulaUpdatingExcep()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell = spreadsheet.GetCell(0, 0);
+            if (cell != null)
+            {
+                cell.Text = "=5%2";
+
+                Assert.Throws<NotSupportedException>(() => spreadsheet.CalculateCell(cell));
+            }
         }
     }
 }

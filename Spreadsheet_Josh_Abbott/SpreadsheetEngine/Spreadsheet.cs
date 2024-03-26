@@ -118,5 +118,14 @@ namespace SpreadsheetEngine
                 return null;
             }
         }
+
+        /// <summary>
+        /// A function to calculate the contents in a cell when a formula is used.
+        /// </summary>
+        /// <param name="cell">The cell that the formula has been entered in.</param>
+        public void CalculateCell(Cell cell)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
