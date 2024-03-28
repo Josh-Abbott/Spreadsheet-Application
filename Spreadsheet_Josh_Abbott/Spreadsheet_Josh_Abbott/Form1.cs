@@ -7,7 +7,9 @@
 namespace Spreadsheet_Josh_Abbott
 {
     using System.ComponentModel;
+    using System.Data.Common;
     using SpreadsheetEngine;
+    using static System.Net.Mime.MediaTypeNames;
 
     /// <summary>
     /// A class for functions for the Form1 WinForm.
@@ -27,6 +29,9 @@ namespace Spreadsheet_Josh_Abbott
             // Create spreadsheet for demo and subscribe to it.
             this.spreadsheet = new Spreadsheet(50, 25);
             this.spreadsheet.PropertyChanged += this.OnCellPropertyChanged;
+
+            this.dataGridView1.CellBeginEdit += this.Spreadsheet_CellBeginEdit;
+            this.dataGridView1.CellEndEdit += this.Spreadsheet_CellEndEdit;
         }
 
         /// <summary>
@@ -118,9 +123,13 @@ namespace Spreadsheet_Josh_Abbott
         /// </summary>
         /// <param name="sender">The object sent.</param>
         /// <param name="e">The event related to the cell editing.</param>
-        private void BeginCellEdit(object sender, DataGridViewCellCancelEventArgs e)
+        private void Spreadsheet_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            throw new NotImplementedException();
+            Cell? cell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+            if (cell != null)
+            {
+                this.dataGridView1[e.ColumnIndex, e.RowIndex].Value = cell.Text;
+            }
         }
 
         /// <summary>
@@ -128,9 +137,14 @@ namespace Spreadsheet_Josh_Abbott
         /// </summary>
         /// <param name="sender">The object sent.</param>
         /// <param name="e">The event related to the cell editing.</param>
-        private void CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void Spreadsheet_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            throw new NotImplementedException();
+            Cell? cell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+            if (cell != null)
+            {
+                string text = this.dataGridView1[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
+                cell.Text = text;
+            }
         }
 
         /// <summary>

@@ -58,10 +58,10 @@ namespace SpreadsheetEngine
         /// <param name="e">The property changed.</param>
         public void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            Cell? cell = (Cell)sender;
+
             if (e.PropertyName == "Text")
             {
-                Cell? cell = (Cell)sender;
-
                 // Determine if the cell text is a formula or not.
                 if (cell.Text.StartsWith('='))
                 {
@@ -72,9 +72,6 @@ namespace SpreadsheetEngine
                     }
 
                     string expression = cell.Text[1..];
-                    int colVal = Convert.ToInt32(expression[0] - 'A');
-                    int rowVal = Convert.ToInt32(expression[1..]) - 1;
-                    cell.Value = this.GetCell(rowVal, colVal) !.Value;
                 }
                 else if (cell.Text == null)
                 {
