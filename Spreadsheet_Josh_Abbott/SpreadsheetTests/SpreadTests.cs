@@ -64,9 +64,11 @@ namespace SpreadsheetEngine.Tests
             var cell = spreadsheet.GetCell(0, 0);
             if (cell != null)
             {
-                cell.Text = "=2+5";
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
 
-                spreadsheet.CalculateCell(cell);
+                // Simulate updating cell
+                cell.Text = "=2+5";
+                spreadsheet.OnCellPropertyChanged(cell, new System.ComponentModel.PropertyChangedEventArgs("Text"));
 
                 Assert.That(cell.Value, Is.EqualTo("7"));
             }
@@ -84,8 +86,6 @@ namespace SpreadsheetEngine.Tests
             {
                 cell.Text = string.Empty;
 
-                spreadsheet.CalculateCell(cell);
-
                 Assert.That(cell.Value, Is.EqualTo(string.Empty));
             }
         }
@@ -100,9 +100,13 @@ namespace SpreadsheetEngine.Tests
             var cell = spreadsheet.GetCell(0, 0);
             if (cell != null)
             {
-                cell.Text = "=5%2";
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
 
-                Assert.Throws<NotSupportedException>(() => spreadsheet.CalculateCell(cell));
+                // Simulate updating cell
+                cell.Text = "=2%5";
+                spreadsheet.OnCellPropertyChanged(cell, new System.ComponentModel.PropertyChangedEventArgs("Text"));
+
+                Assert.That(cell.Value, Is.EqualTo("#ERROR"));
             }
         }
     }

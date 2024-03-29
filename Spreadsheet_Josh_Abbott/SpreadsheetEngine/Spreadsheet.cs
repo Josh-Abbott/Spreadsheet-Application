@@ -106,6 +106,11 @@ namespace SpreadsheetEngine
                 }
             }
 
+            if (this.PropertyChanged == null)
+            {
+                throw new NullReferenceException("The cell text cannot be null.");
+            }
+
             this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
         }
 
@@ -186,10 +191,6 @@ namespace SpreadsheetEngine
 
                     // Evaluate and set cell's Value
                     cell.Value = expTree.Evaluate().ToString();
-                }
-                catch (NotSupportedException)
-                {
-                    throw;
                 }
                 catch (Exception)
                 {
