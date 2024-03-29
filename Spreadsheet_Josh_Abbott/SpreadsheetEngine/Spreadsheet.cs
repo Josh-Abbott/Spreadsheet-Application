@@ -7,6 +7,7 @@
 
 namespace SpreadsheetEngine
 {
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Xml.Xsl;
 
@@ -21,9 +22,9 @@ namespace SpreadsheetEngine
         /// <summary>
         /// A table of cells to represent the spreadsheet.
         /// </summary>
-        private Cell[,] ? spreadsheet;
+        private CellP[,] ? spreadsheet;
 
-        private Dictionary<Cell, List<Cell>> dependencies = new Dictionary<Cell, List<Cell>>();
+        private Dictionary<CellP, HashSet<CellP>> dependencies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -33,9 +34,10 @@ namespace SpreadsheetEngine
         /// <param name="columnCount">The count of columns.</param>
         public Spreadsheet(int rowCount, int columnCount)
         {
-            this.spreadsheet = new Cell[rowCount, columnCount];
+            this.spreadsheet = new CellP[rowCount, columnCount];
             this.rowCount = rowCount;
             this.columnCount = columnCount;
+            this.dependencies = new Dictionary<CellP, HashSet<CellP>>();
 
             // Create the spreadsheet object
             for (int r = 0; r < rowCount; r++)
@@ -60,7 +62,7 @@ namespace SpreadsheetEngine
         /// <param name="e">The property changed.</param>
         public void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Cell? cell = (Cell)sender;
+            CellP? cell = (CellP)sender;
 
             if (e.PropertyName == "Text")
             {
@@ -74,6 +76,16 @@ namespace SpreadsheetEngine
                     }
 
                     this.CalculateCell(cell);
+
+                    // Check for dependencies that need to be updated
+                    if (this.dependencies.ContainsKey(cell))
+                    {
+                        foreach (var entry in this.dependencies)
+                        {
+                            CellP dependentCell = entry.Key;
+                            this.CalculateCell(dependentCell);
+                        }
+                    }
                 }
                 else if (cell.Text == null)
                 {
@@ -99,7 +111,7 @@ namespace SpreadsheetEngine
         /// <param name="row">The specific row number.</param>
         /// <param name="column">The specific column number.</param>
         /// <returns>The abstract cell at the given position.</returns>
-        public Cell? GetCell(int row, int column)
+        public CellP? GetCell(int row, int column)
         {
             if (this.spreadsheet != null)
             {
@@ -118,23 +130,11 @@ namespace SpreadsheetEngine
             }
         }
 
-        private void RecalculateDependentCells(Cell changedCell)
-        {
-            if (this.dependencies.TryGetValue(changedCell, out List<Cell>? value))
-            {
-                foreach (CellP dependentCell in value)
-                {
-                    // Assuming formulas are not nested more than once.
-                    this.CalculateCell(dependentCell);
-                }
-            }
-        }
-
         /// <summary>
         /// A function to calculate the contents in a cell when a formula is used.
         /// </summary>
         /// <param name="cell">The cell that the formula has been entered in.</param>
-        public void CalculateCell(Cell cell)
+        public void CalculateCell(CellP cell)
         {
             if (cell.Text.StartsWith('='))
             {
@@ -142,13 +142,14 @@ namespace SpreadsheetEngine
                 {
                     // Create ExpressionTree and set variables
                     ExpTreeP expTree = new ExpTreeP(cell.Text.Substring(1));
-                    this.dependencies[cell] = new List<Cell>();  // Clear existing
+                    this.dependencies[cell] = new HashSet<CellP>();
                     foreach (string varName in expTree.GetVariableNames())
                     {
+                        // Get the relevant parts from the formula
                         int col = varName[0] - 'A';
                         int row = int.Parse(varName.Substring(1)) - 1;
 
-                        Cell? referencedCell = this.GetCell(row, col);
+                        CellP? referencedCell = this.GetCell(row, col);
                         if (referencedCell != null)
                         {
                             if (double.TryParse(referencedCell.Value, out double value))
@@ -160,15 +161,23 @@ namespace SpreadsheetEngine
                                 cell.Value = "#ERROR";
                                 return;
                             }
+
+                            if (referencedCell != null)
+                            {
+                                if (!this.dependencies.TryGetValue(referencedCell, out HashSet<CellP>? val))
+                                {
+                                    val = new HashSet<CellP>();
+                                    this.dependencies[referencedCell] = val;
+                                }
+
+                                val.Add(cell);
+                            }
                         }
                         else
                         {
                             cell.Value = "#ERROR";
                             return;
                         }
-
-                        // Update dependencies dictionary
-                        this.dependencies[cell].Add(referencedCell);
                     }
 
                     // Evaluate and set cell's Value
@@ -184,9 +193,6 @@ namespace SpreadsheetEngine
             {
                 cell.Value = cell.Text;
             }
-
-            // Dependency recalculation
-            this.RecalculateDependentCells(cell);
         }
     }
 }
