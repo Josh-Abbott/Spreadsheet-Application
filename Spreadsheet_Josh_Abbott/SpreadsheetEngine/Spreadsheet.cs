@@ -94,6 +94,15 @@ namespace SpreadsheetEngine
                 else
                 {
                     cell.Value = cell.Text;
+
+                    if (this.dependencies.ContainsKey(cell))
+                    {
+                        foreach (var entry in this.dependencies)
+                        {
+                            CellP dependentCell = entry.Key;
+                            this.CalculateCell(dependentCell);
+                        }
+                    }
                 }
             }
 
