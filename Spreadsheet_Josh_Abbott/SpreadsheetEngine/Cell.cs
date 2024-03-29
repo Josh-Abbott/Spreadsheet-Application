@@ -108,6 +108,11 @@ namespace SpreadsheetEngine
                 {
                     this.value = value;
                     this.OnPropertyChanged(nameof(this.Value));
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(this.Value)));
+                    }
                 }
                 else
                 {

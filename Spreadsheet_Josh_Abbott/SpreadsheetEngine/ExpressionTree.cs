@@ -55,6 +55,15 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Gets the names inside of the variable list.
+        /// </summary>
+        /// <returns>The keys from the variables list.</returns>
+        public IEnumerable<string> GetVariableNames()
+        {
+            return this.vars.Keys;
+        }
+
+        /// <summary>
         /// A public Evaluate() function with a default of 0 that can redirect.
         /// </summary>
         /// <returns>The result of the evaluation.</returns>

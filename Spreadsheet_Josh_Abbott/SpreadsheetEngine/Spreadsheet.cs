@@ -23,6 +23,8 @@ namespace SpreadsheetEngine
         /// </summary>
         private Cell[,] ? spreadsheet;
 
+        private Dictionary<Cell, List<Cell>> dependencies = new Dictionary<Cell, List<Cell>>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
         /// The constructor for the spreadsheet class that initializes the array of cells.
@@ -71,7 +73,7 @@ namespace SpreadsheetEngine
                         throw new ArgumentException("The cell text cannot be only '='.");
                     }
 
-                    string expression = cell.Text[1..];
+                    this.CalculateCell(cell);
                 }
                 else if (cell.Text == null)
                 {
@@ -116,13 +118,75 @@ namespace SpreadsheetEngine
             }
         }
 
+        private void RecalculateDependentCells(Cell changedCell)
+        {
+            if (this.dependencies.TryGetValue(changedCell, out List<Cell>? value))
+            {
+                foreach (CellP dependentCell in value)
+                {
+                    // Assuming formulas are not nested more than once.
+                    this.CalculateCell(dependentCell);
+                }
+            }
+        }
+
         /// <summary>
         /// A function to calculate the contents in a cell when a formula is used.
         /// </summary>
         /// <param name="cell">The cell that the formula has been entered in.</param>
         public void CalculateCell(Cell cell)
         {
-            throw new NotImplementedException();
+            if (cell.Text.StartsWith('='))
+            {
+                try
+                {
+                    // Create ExpressionTree and set variables
+                    ExpTreeP expTree = new ExpTreeP(cell.Text.Substring(1));
+                    this.dependencies[cell] = new List<Cell>();  // Clear existing
+                    foreach (string varName in expTree.GetVariableNames())
+                    {
+                        int col = varName[0] - 'A';
+                        int row = int.Parse(varName.Substring(1)) - 1;
+
+                        Cell? referencedCell = this.GetCell(row, col);
+                        if (referencedCell != null)
+                        {
+                            if (double.TryParse(referencedCell.Value, out double value))
+                            {
+                                expTree.SetVariable(varName, value);
+                            }
+                            else
+                            {
+                                cell.Value = "#ERROR";
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            cell.Value = "#ERROR";
+                            return;
+                        }
+
+                        // Update dependencies dictionary
+                        this.dependencies[cell].Add(referencedCell);
+                    }
+
+                    // Evaluate and set cell's Value
+                    cell.Value = expTree.Evaluate().ToString();
+                }
+                catch (Exception)
+                {
+                    // Catch exceptions from expression evaluation
+                    cell.Value = "#ERROR";
+                }
+            }
+            else
+            {
+                cell.Value = cell.Text;
+            }
+
+            // Dependency recalculation
+            this.RecalculateDependentCells(cell);
         }
     }
 }
