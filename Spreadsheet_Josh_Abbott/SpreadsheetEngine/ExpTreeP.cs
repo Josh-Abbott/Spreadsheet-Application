@@ -1,4 +1,4 @@
-﻿// <copyright file="Spreadsheet.ExpTreeP.cs" company="Josh Abbott">
+﻿// <copyright file="ExpTreeP.cs" company="Josh Abbott">
 // Copyright (c) Josh Abbott. All rights reserved.
 // </copyright>
 
