@@ -5,6 +5,8 @@
 namespace SpreadsheetEngine
 {
     using System.ComponentModel;
+    using System.Drawing;
+    using System.Xml;
 
     /// <summary>
     /// An abstract class for the cell.
@@ -30,6 +32,8 @@ namespace SpreadsheetEngine
         /// A value string to keep the value of the cell.
         /// </summary>
         protected string value = string.Empty;
+
+        private uint bgColor = 0xFFFFFFFF;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
@@ -117,6 +121,26 @@ namespace SpreadsheetEngine
                 else
                 {
                     return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the color of the cell's background.
+        /// </summary>
+        public uint BGColor
+        {
+            get
+            {
+                return this.bgColor;
+            }
+
+            set
+            {
+                if (this.bgColor != value)
+                {
+                    this.bgColor = value;
+                    this.OnPropertyChanged(nameof(this.bgColor));
                 }
             }
         }

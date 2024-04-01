@@ -6,6 +6,7 @@ namespace SpreadsheetEngine.Tests
 {
     using System.ComponentModel;
     using NUnit.Framework;
+    using static SpreadsheetEngine.Spreadsheet;
 
     /// <summary>
     /// A class containing the test cases created for property changed functionality.
@@ -108,6 +109,69 @@ namespace SpreadsheetEngine.Tests
 
                 Assert.That(cell.Value, Is.EqualTo("#ERROR"));
             }
+        }
+
+        /// <summary>
+        /// A normal case for testing both the undo and redo functionality for a cell.
+        /// </summary>
+        [Test]
+        public void CellUndoRedoNormal()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell = spreadsheet.GetCell(0, 0);
+
+            if (cell != null)
+            {
+                Assert.That(cell.Text, Is.EqualTo(string.Empty)); // Assuming empty cell
+                cell.Text = "Hello";
+
+                spreadsheet.Undo();
+                Assert.That(cell.Text, Is.EqualTo(string.Empty));
+
+                spreadsheet.Redo();
+                Assert.That(cell.Text, Is.EqualTo("Hello"));
+            }
+        }
+
+        /// <summary>
+        /// An edge case for testing both the undo and redo functionality for a cell.
+        /// </summary>
+        [Test]
+        public void CellUndoRedoEdge()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell1 = spreadsheet.GetCell(0, 0);
+            var cell2 = spreadsheet.GetCell(1, 0);
+
+            if (cell1 != null && cell2 != null)
+            {
+                cell1.Text = "Hello";
+                cell2.Text = "Hi";
+
+                spreadsheet.Undo();
+                spreadsheet.Undo();
+                Assert.Multiple(() =>
+                {
+                    Assert.That(cell1.Text, Is.EqualTo(string.Empty));
+                    Assert.That(cell2.Text, Is.EqualTo("Hi"));
+                });
+                spreadsheet.Redo();
+                Assert.That(cell1.Text, Is.EqualTo("Hello"));
+
+                spreadsheet.Redo();
+                Assert.That(cell2.Text, Is.EqualTo(string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// An exception case for testing both the undo and redo functionality for a cell.
+        /// </summary>
+        [Test]
+        public void CellUndoRedoExcep()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+
+            Assert.Throws<InvalidOperationException>(() => spreadsheet.Undo());
         }
     }
 }
