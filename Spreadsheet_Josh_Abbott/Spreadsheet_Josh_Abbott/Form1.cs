@@ -47,7 +47,7 @@ namespace Spreadsheet_Josh_Abbott
             char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
             foreach (char letter in letters)
             {
-                DataGridViewTextBoxColumn col = new()
+                DataGridViewTextBoxColumn col = new ()
                 {
                     Name = letter.ToString(),
                 };
@@ -60,7 +60,7 @@ namespace Spreadsheet_Josh_Abbott
             // Create 50 rows and label the Header Cell with the number for each.
             for (int i = 1; i < 51; i++)
             {
-                DataGridViewRow row = new();
+                DataGridViewRow row = new ();
                 row.HeaderCell.Value = i.ToString();
                 this.dataGridView1.Rows.Add(row);
             }
