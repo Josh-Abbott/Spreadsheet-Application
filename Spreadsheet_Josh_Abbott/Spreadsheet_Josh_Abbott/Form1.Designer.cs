@@ -33,8 +33,14 @@
             Column2 = new DataGridViewTextBoxColumn();
             Column3 = new DataGridViewTextBoxColumn();
             Column4 = new DataGridViewTextBoxColumn();
-            button1 = new Button();
+            menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            runDemoToolStripMenuItem = new ToolStripMenuItem();
+            editToolStripMenuItem = new ToolStripMenuItem();
+            cellToolStripMenuItem = new ToolStripMenuItem();
+            changeBackgroundColorToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // dataGridView1
@@ -43,10 +49,10 @@
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3, Column4 });
-            dataGridView1.Location = new Point(12, 12);
+            dataGridView1.Location = new Point(12, 30);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(776, 409);
+            dataGridView1.Size = new Size(776, 408);
             dataGridView1.TabIndex = 0;
             // 
             // Column1
@@ -77,28 +83,64 @@
             Column4.Name = "Column4";
             Column4.Width = 125;
             // 
-            // button1
+            // menuStrip1
             // 
-            button1.BackColor = Color.LightGray;
-            button1.Location = new Point(12, 422);
-            button1.Name = "button1";
-            button1.Size = new Size(776, 29);
-            button1.TabIndex = 1;
-            button1.Text = "Demo";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += Button1_Click;
+            menuStrip1.ImageScalingSize = new Size(20, 20);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem, cellToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(800, 28);
+            menuStrip1.TabIndex = 2;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runDemoToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(46, 24);
+            fileToolStripMenuItem.Text = "File";
+            // 
+            // runDemoToolStripMenuItem
+            // 
+            runDemoToolStripMenuItem.Name = "runDemoToolStripMenuItem";
+            runDemoToolStripMenuItem.Size = new Size(162, 26);
+            runDemoToolStripMenuItem.Text = "Run Demo";
+            runDemoToolStripMenuItem.Click += runDemoToolStripMenuItem_Click;
+            // 
+            // editToolStripMenuItem
+            // 
+            editToolStripMenuItem.Name = "editToolStripMenuItem";
+            editToolStripMenuItem.Size = new Size(49, 24);
+            editToolStripMenuItem.Text = "Edit";
+            // 
+            // cellToolStripMenuItem
+            // 
+            cellToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { changeBackgroundColorToolStripMenuItem });
+            cellToolStripMenuItem.Name = "cellToolStripMenuItem";
+            cellToolStripMenuItem.Size = new Size(48, 24);
+            cellToolStripMenuItem.Text = "Cell";
+            // 
+            // changeBackgroundColorToolStripMenuItem
+            // 
+            changeBackgroundColorToolStripMenuItem.Name = "changeBackgroundColorToolStripMenuItem";
+            changeBackgroundColorToolStripMenuItem.Size = new Size(272, 26);
+            changeBackgroundColorToolStripMenuItem.Text = "Change background color...";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(button1);
             Controls.Add(dataGridView1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "CptS 321 Spreadsheet";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -108,6 +150,11 @@
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column4;
-        private Button button1;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem editToolStripMenuItem;
+        private ToolStripMenuItem cellToolStripMenuItem;
+        private ToolStripMenuItem runDemoToolStripMenuItem;
+        private ToolStripMenuItem changeBackgroundColorToolStripMenuItem;
     }
 }

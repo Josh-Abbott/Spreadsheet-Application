@@ -45,7 +45,7 @@ namespace Spreadsheet_Josh_Abbott
             char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
             foreach (char letter in letters)
             {
-                DataGridViewTextBoxColumn col = new ()
+                DataGridViewTextBoxColumn col = new()
                 {
                     Name = letter.ToString(),
                 };
@@ -58,7 +58,7 @@ namespace Spreadsheet_Josh_Abbott
             // Create 50 rows and label the Header Cell with the number for each.
             for (int i = 1; i < 51; i++)
             {
-                DataGridViewRow row = new ();
+                DataGridViewRow row = new();
                 row.HeaderCell.Value = i.ToString();
                 this.dataGridView1.Rows.Add(row);
             }
@@ -87,7 +87,7 @@ namespace Spreadsheet_Josh_Abbott
         /// </summary>
         private void RunDemo()
         {
-            Random rand = new ();
+            Random rand = new();
 
             // Set the text in about 50 random cells to "Hello World!".
             for (int i = 0; i < 50; i++)
@@ -155,6 +155,10 @@ namespace Spreadsheet_Josh_Abbott
         /// Triggered when the demo button is clicked to run it.
         /// </summary>
         private void Button1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void runDemoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.RunDemo();
         }
