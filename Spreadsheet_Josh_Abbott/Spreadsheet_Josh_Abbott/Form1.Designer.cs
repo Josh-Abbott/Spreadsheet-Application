@@ -105,7 +105,7 @@
             runDemoToolStripMenuItem.Name = "runDemoToolStripMenuItem";
             runDemoToolStripMenuItem.Size = new Size(162, 26);
             runDemoToolStripMenuItem.Text = "Run Demo";
-            runDemoToolStripMenuItem.Click += runDemoToolStripMenuItem_Click;
+            runDemoToolStripMenuItem.Click += RunDemoToolStripMenuItem_Click;
             // 
             // editToolStripMenuItem
             // 
@@ -125,6 +125,7 @@
             changeBackgroundColorToolStripMenuItem.Name = "changeBackgroundColorToolStripMenuItem";
             changeBackgroundColorToolStripMenuItem.Size = new Size(272, 26);
             changeBackgroundColorToolStripMenuItem.Text = "Change background color...";
+            changeBackgroundColorToolStripMenuItem.Click += ChangeBackgroundColorToolStripMenuItem_Click;
             // 
             // Form1
             // 

@@ -8,6 +8,7 @@ namespace Spreadsheet_Josh_Abbott
 {
     using System.ComponentModel;
     using System.Data.Common;
+    using System.Runtime.CompilerServices;
     using SpreadsheetEngine;
     using static System.Net.Mime.MediaTypeNames;
 
@@ -152,15 +153,36 @@ namespace Spreadsheet_Josh_Abbott
         }
 
         /// <summary>
-        /// Triggered when the demo button is clicked to run it.
+        /// Runs the demo when selected.
         /// </summary>
-        private void Button1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void runDemoToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <param name="sender">The object being sent.</param>
+        /// <param name="e">The event.</param>
+        private void RunDemoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.RunDemo();
+        }
+
+        /// <summary>
+        /// Prompts the user with options to change the background color of the cell.
+        /// </summary>
+        /// <param name="sender">The object being sent.</param>
+        /// <param name="e">The event.</param>
+        private void ChangeBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+            colorDialog.ShowDialog();
+
+            Stack<Cell> cells = new Stack<Cell>();
+
+            foreach (DataGridViewCell gCell in this.dataGridView1.SelectedCells)
+            {
+                Cell? dCell = this.spreadsheet.GetCell(gCell.RowIndex, gCell.ColumnIndex);
+                if (dCell != null)
+                {
+                    cells.Push(dCell);
+                    dCell.BGColor = (uint)colorDialog.Color.ToArgb();
+                }
+            }
         }
     }
 }
