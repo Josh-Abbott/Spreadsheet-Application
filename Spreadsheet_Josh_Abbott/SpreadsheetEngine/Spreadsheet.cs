@@ -116,9 +116,6 @@ namespace SpreadsheetEngine
             {
                 throw new NullReferenceException("The cell text cannot be null.");
             }
-
-
-
         }
 
         /// <summary>

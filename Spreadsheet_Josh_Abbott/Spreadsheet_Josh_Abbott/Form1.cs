@@ -9,6 +9,7 @@ namespace Spreadsheet_Josh_Abbott
     using System.ComponentModel;
     using System.Data.Common;
     using System.Runtime.CompilerServices;
+    using System.Windows.Forms;
     using SpreadsheetEngine;
     using static System.Net.Mime.MediaTypeNames;
 
@@ -88,7 +89,7 @@ namespace Spreadsheet_Josh_Abbott
         /// </summary>
         private void RunDemo()
         {
-            Random rand = new();
+            Random rand = new ();
 
             // Set the text in about 50 random cells to "Hello World!".
             for (int i = 0; i < 50; i++)
@@ -170,17 +171,18 @@ namespace Spreadsheet_Josh_Abbott
         private void ChangeBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
-            colorDialog.ShowDialog();
-
             Stack<Cell> cells = new Stack<Cell>();
 
-            foreach (DataGridViewCell gCell in this.dataGridView1.SelectedCells)
+            if (colorDialog.ShowDialog() == DialogResult.OK)
             {
-                Cell? dCell = this.spreadsheet.GetCell(gCell.RowIndex, gCell.ColumnIndex);
-                if (dCell != null)
+                foreach (DataGridViewCell gCell in this.dataGridView1.SelectedCells)
                 {
-                    cells.Push(dCell);
-                    dCell.BGColor = (uint)colorDialog.Color.ToArgb();
+                    Cell? dCell = this.spreadsheet.GetCell(gCell.RowIndex, gCell.ColumnIndex);
+                    if (dCell != null)
+                    {
+                        cells.Push(dCell);
+                        dCell.BGColor = (uint)colorDialog.Color.ToArgb();
+                    }
                 }
             }
         }
