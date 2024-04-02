@@ -104,6 +104,12 @@ namespace SpreadsheetEngine
                         }
                     }
                 }
+
+                this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
+            }
+            else if (e.PropertyName == "BGColor")
+            {
+                this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("BGColor"));
             }
 
             if (this.PropertyChanged == null)
@@ -111,7 +117,8 @@ namespace SpreadsheetEngine
                 throw new NullReferenceException("The cell text cannot be null.");
             }
 
-            this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
+
+
         }
 
         /// <summary>

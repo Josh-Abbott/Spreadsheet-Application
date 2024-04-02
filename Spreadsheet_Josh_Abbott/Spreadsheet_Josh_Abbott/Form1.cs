@@ -71,10 +71,14 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The property changed.</param>
         private void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            Cell cell = (Cell)sender;
             if (e.PropertyName == "Value")
             {
-                Cell cell = (Cell)sender;
                 this.dataGridView1.Rows[cell.RowIndex].Cells[cell.ColumnIndex].Value = cell.Value;
+            }
+            else if (e.PropertyName == "BGColor")
+            {
+                this.dataGridView1.Rows[cell.RowIndex].Cells[cell.ColumnIndex].Style.BackColor = Color.FromArgb((int)cell.BGColor);
             }
         }
 

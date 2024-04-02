@@ -5,8 +5,6 @@
 namespace SpreadsheetEngine
 {
     using System.ComponentModel;
-    using System.Drawing;
-    using System.Xml;
 
     /// <summary>
     /// An abstract class for the cell.
@@ -140,7 +138,7 @@ namespace SpreadsheetEngine
                 if (this.bgColor != value)
                 {
                     this.bgColor = value;
-                    this.OnPropertyChanged(nameof(this.bgColor));
+                    this.OnPropertyChanged(nameof(this.BGColor));
                 }
             }
         }
