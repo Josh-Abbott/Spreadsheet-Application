@@ -124,10 +124,10 @@ namespace SpreadsheetEngine.Tests
                 Assert.That(cell.Text, Is.EqualTo(string.Empty)); // Assuming empty cell
                 cell.Text = "Hello";
 
-                spreadsheet.undo();
+                spreadsheet.Undo();
                 Assert.That(cell.Text, Is.EqualTo(string.Empty));
 
-                spreadsheet.redo();
+                spreadsheet.Redo();
                 Assert.That(cell.Text, Is.EqualTo("Hello"));
             }
         }
@@ -147,17 +147,17 @@ namespace SpreadsheetEngine.Tests
                 cell1.Text = "Hello";
                 cell2.Text = "Hi";
 
-                spreadsheet.undo();
-                spreadsheet.undo();
+                spreadsheet.Undo();
+                spreadsheet.Undo();
                 Assert.Multiple(() =>
                 {
                     Assert.That(cell1.Text, Is.EqualTo(string.Empty));
                     Assert.That(cell2.Text, Is.EqualTo("Hi"));
                 });
-                spreadsheet.redo();
+                spreadsheet.Redo();
                 Assert.That(cell1.Text, Is.EqualTo("Hello"));
 
-                spreadsheet.redo();
+                spreadsheet.Redo();
                 Assert.That(cell2.Text, Is.EqualTo(string.Empty));
             }
         }
@@ -170,7 +170,7 @@ namespace SpreadsheetEngine.Tests
         {
             var spreadsheet = new Spreadsheet(5, 5);
 
-            Assert.Throws<InvalidOperationException>(() => spreadsheet.undo());
+            Assert.Throws<InvalidOperationException>(() => spreadsheet.Undo());
         }
     }
 }

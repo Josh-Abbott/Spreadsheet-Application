@@ -22,9 +22,10 @@ namespace SpreadsheetEngine
         /// <summary>
         /// A table of cells to represent the spreadsheet.
         /// </summary>
-        private Cell[,] ? spreadsheet;
+        private Cell[,]? spreadsheet;
 
         private Dictionary<Cell, HashSet<Cell>> dependencies;
+        private UndoRedoCollection undoRedo = new UndoRedoCollection();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -68,6 +69,8 @@ namespace SpreadsheetEngine
             {
                 if (e.PropertyName == "Text")
                 {
+                    this.AddUndo(new TextEditAction(cell, cell.Text, (string)cell.Value));
+
                     // Determine if the cell text is a formula or not.
                     if (cell.Text.StartsWith('='))
                     {
@@ -111,6 +114,8 @@ namespace SpreadsheetEngine
                 }
                 else if (e.PropertyName == "BGColor")
                 {
+                    uint oldColor = cell.BGColor;
+                    this.AddUndo(new BGColorEditAction(cell, oldColor, cell.BGColor));
                     this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("BGColor"));
                 }
 
@@ -211,9 +216,29 @@ namespace SpreadsheetEngine
             }
         }
 
-        public void AddUndo()
+        /// <summary>
+        /// Adds the action to the UndoRedoCollection.
+        /// </summary>
+        /// <param name="act">The action being added.</param>
+        public void AddUndo(IEditAction act)
         {
+            this.undoRedo.AddAction(act);
+        }
 
+        /// <summary>
+        /// Calls the undo function to undo the intended action.
+        /// </summary>
+        public void Undo()
+        {
+            this.undoRedo.Undo();
+        }
+
+        /// <summary>
+        /// Calls the redo function to redo the intended action.
+        /// </summary>
+        public void Redo()
+        {
+            this.undoRedo.Redo();
         }
     }
 }

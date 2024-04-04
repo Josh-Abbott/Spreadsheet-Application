@@ -194,7 +194,7 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The event.</param>
         private void UndoBackgroundColorChangeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            this.spreadsheet.Undo();
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The event.</param>
         private void RedoBackgroundColorChangeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            this.spreadsheet.Redo();
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The event.</param>
         private void UndoTextChangeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            this.spreadsheet.Undo();
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The event.</param>
         private void RedoTextChangeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            this.spreadsheet.Redo();
         }
     }
 }
