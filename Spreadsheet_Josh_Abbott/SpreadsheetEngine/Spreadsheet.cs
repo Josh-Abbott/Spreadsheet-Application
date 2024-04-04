@@ -64,57 +64,60 @@ namespace SpreadsheetEngine
         {
             Cell? cell = (Cell)sender;
 
-            if (e.PropertyName == "Text")
+            if (cell != null)
             {
-                // Determine if the cell text is a formula or not.
-                if (cell.Text.StartsWith('='))
+                if (e.PropertyName == "Text")
                 {
-                    // Verify that the cell text actually contains a formula.
-                    if (cell.Text.Length == 1)
+                    // Determine if the cell text is a formula or not.
+                    if (cell.Text.StartsWith('='))
                     {
-                        throw new ArgumentException("The cell text cannot be only '='.");
-                    }
-
-                    this.CalculateCell(cell);
-
-                    // Check for dependencies that need to be updated
-                    if (this.dependencies.ContainsKey(cell))
-                    {
-                        foreach (var entry in this.dependencies)
+                        // Verify that the cell text actually contains a formula.
+                        if (cell.Text.Length == 1)
                         {
-                            Cell dependentCell = entry.Key;
-                            this.CalculateCell(dependentCell);
+                            throw new ArgumentException("The cell text cannot be only '='.");
+                        }
+
+                        this.CalculateCell(cell);
+
+                        // Check for dependencies that need to be updated
+                        if (this.dependencies.ContainsKey(cell))
+                        {
+                            foreach (var entry in this.dependencies)
+                            {
+                                Cell dependentCell = entry.Key;
+                                this.CalculateCell(dependentCell);
+                            }
                         }
                     }
+                    else if (cell.Text == null)
+                    {
+                        throw new NullReferenceException("The cell text cannot be null.");
+                    }
+                    else
+                    {
+                        cell.Value = cell.Text;
+
+                        if (this.dependencies.ContainsKey(cell))
+                        {
+                            foreach (var entry in this.dependencies)
+                            {
+                                Cell dependentCell = entry.Key;
+                                this.CalculateCell(dependentCell);
+                            }
+                        }
+                    }
+
+                    this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
                 }
-                else if (cell.Text == null)
+                else if (e.PropertyName == "BGColor")
+                {
+                    this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("BGColor"));
+                }
+
+                if (this.PropertyChanged == null)
                 {
                     throw new NullReferenceException("The cell text cannot be null.");
                 }
-                else
-                {
-                    cell.Value = cell.Text;
-
-                    if (this.dependencies.ContainsKey(cell))
-                    {
-                        foreach (var entry in this.dependencies)
-                        {
-                            Cell dependentCell = entry.Key;
-                            this.CalculateCell(dependentCell);
-                        }
-                    }
-                }
-
-                this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
-            }
-            else if (e.PropertyName == "BGColor")
-            {
-                this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("BGColor"));
-            }
-
-            if (this.PropertyChanged == null)
-            {
-                throw new NullReferenceException("The cell text cannot be null.");
             }
         }
 
@@ -206,6 +209,11 @@ namespace SpreadsheetEngine
             {
                 cell.Value = cell.Text;
             }
+        }
+
+        public void AddUndo()
+        {
+
         }
     }
 }

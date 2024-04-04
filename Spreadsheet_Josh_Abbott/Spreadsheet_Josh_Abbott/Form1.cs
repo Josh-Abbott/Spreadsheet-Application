@@ -47,7 +47,7 @@ namespace Spreadsheet_Josh_Abbott
             char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
             foreach (char letter in letters)
             {
-                DataGridViewTextBoxColumn col = new ()
+                DataGridViewTextBoxColumn col = new()
                 {
                     Name = letter.ToString(),
                 };
@@ -60,7 +60,7 @@ namespace Spreadsheet_Josh_Abbott
             // Create 50 rows and label the Header Cell with the number for each.
             for (int i = 1; i < 51; i++)
             {
-                DataGridViewRow row = new ();
+                DataGridViewRow row = new();
                 row.HeaderCell.Value = i.ToString();
                 this.dataGridView1.Rows.Add(row);
             }
@@ -89,7 +89,7 @@ namespace Spreadsheet_Josh_Abbott
         /// </summary>
         private void RunDemo()
         {
-            Random rand = new ();
+            Random rand = new();
 
             // Set the text in about 50 random cells to "Hello World!".
             for (int i = 0; i < 50; i++)
@@ -185,6 +185,46 @@ namespace Spreadsheet_Josh_Abbott
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Undoes any recent background color changes when selected.
+        /// </summary>
+        /// <param name="sender">The object being sent.</param>
+        /// <param name="e">The event.</param>
+        private void UndoBackgroundColorChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Redoes any recent background color changes when selected.
+        /// </summary>
+        /// <param name="sender">The object being sent.</param>
+        /// <param name="e">The event.</param>
+        private void RedoBackgroundColorChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Undoes any recent background text changes when selected.
+        /// </summary>
+        /// <param name="sender">The object being sent.</param>
+        /// <param name="e">The event.</param>
+        private void UndoTextChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Redoes any recent background text changes when selected.
+        /// </summary>
+        /// <param name="sender">The object being sent.</param>
+        /// <param name="e">The event.</param>
+        private void RedoTextChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

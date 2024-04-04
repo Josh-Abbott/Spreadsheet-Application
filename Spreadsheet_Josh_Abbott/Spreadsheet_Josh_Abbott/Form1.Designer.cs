@@ -39,6 +39,10 @@
             editToolStripMenuItem = new ToolStripMenuItem();
             cellToolStripMenuItem = new ToolStripMenuItem();
             changeBackgroundColorToolStripMenuItem = new ToolStripMenuItem();
+            undoBackgroundColorChangeToolStripMenuItem = new ToolStripMenuItem();
+            redoBackgroundColorChangeToolStripMenuItem = new ToolStripMenuItem();
+            undoTextChangeToolStripMenuItem = new ToolStripMenuItem();
+            redoTextChangeToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -109,6 +113,7 @@
             // 
             // editToolStripMenuItem
             // 
+            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { undoBackgroundColorChangeToolStripMenuItem, redoBackgroundColorChangeToolStripMenuItem, undoTextChangeToolStripMenuItem, redoTextChangeToolStripMenuItem });
             editToolStripMenuItem.Name = "editToolStripMenuItem";
             editToolStripMenuItem.Size = new Size(49, 24);
             editToolStripMenuItem.Text = "Edit";
@@ -126,6 +131,34 @@
             changeBackgroundColorToolStripMenuItem.Size = new Size(272, 26);
             changeBackgroundColorToolStripMenuItem.Text = "Change background color...";
             changeBackgroundColorToolStripMenuItem.Click += ChangeBackgroundColorToolStripMenuItem_Click;
+            // 
+            // undoBackgroundColorChangeToolStripMenuItem
+            // 
+            undoBackgroundColorChangeToolStripMenuItem.Name = "undoBackgroundColorChangeToolStripMenuItem";
+            undoBackgroundColorChangeToolStripMenuItem.Size = new Size(301, 26);
+            undoBackgroundColorChangeToolStripMenuItem.Text = "Undo background color change";
+            undoBackgroundColorChangeToolStripMenuItem.Click += UndoBackgroundColorChangeToolStripMenuItem_Click;
+            // 
+            // redoBackgroundColorChangeToolStripMenuItem
+            // 
+            redoBackgroundColorChangeToolStripMenuItem.Name = "redoBackgroundColorChangeToolStripMenuItem";
+            redoBackgroundColorChangeToolStripMenuItem.Size = new Size(301, 26);
+            redoBackgroundColorChangeToolStripMenuItem.Text = "Redo background color change";
+            redoBackgroundColorChangeToolStripMenuItem.Click += RedoBackgroundColorChangeToolStripMenuItem_Click;
+            // 
+            // undoTextChangeToolStripMenuItem
+            // 
+            undoTextChangeToolStripMenuItem.Name = "undoTextChangeToolStripMenuItem";
+            undoTextChangeToolStripMenuItem.Size = new Size(301, 26);
+            undoTextChangeToolStripMenuItem.Text = "Undo text change";
+            undoTextChangeToolStripMenuItem.Click += UndoTextChangeToolStripMenuItem_Click;
+            // 
+            // redoTextChangeToolStripMenuItem
+            // 
+            redoTextChangeToolStripMenuItem.Name = "redoTextChangeToolStripMenuItem";
+            redoTextChangeToolStripMenuItem.Size = new Size(301, 26);
+            redoTextChangeToolStripMenuItem.Text = "Redo text change";
+            redoTextChangeToolStripMenuItem.Click += RedoTextChangeToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -157,5 +190,9 @@
         private ToolStripMenuItem cellToolStripMenuItem;
         private ToolStripMenuItem runDemoToolStripMenuItem;
         private ToolStripMenuItem changeBackgroundColorToolStripMenuItem;
+        private ToolStripMenuItem undoBackgroundColorChangeToolStripMenuItem;
+        private ToolStripMenuItem redoBackgroundColorChangeToolStripMenuItem;
+        private ToolStripMenuItem undoTextChangeToolStripMenuItem;
+        private ToolStripMenuItem redoTextChangeToolStripMenuItem;
     }
 }
