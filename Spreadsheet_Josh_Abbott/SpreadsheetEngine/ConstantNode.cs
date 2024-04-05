@@ -13,18 +13,13 @@ namespace SpreadsheetEngine
     /// <summary>
     /// A class for constants found in the expression.
     /// </summary>
-    public class ConstantNode : Node
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ConstantNode"/> class.
+    /// </remarks>
+    /// <param name="value">The value of the constant.</param>
+    public class ConstantNode(double value) : Node
     {
-        private double value;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConstantNode"/> class.
-        /// </summary>
-        /// <param name="value">The value of the constant.</param>
-        public ConstantNode(double value)
-        {
-            this.value = value;
-        }
+        private double value = value;
 
         /// <summary>
         /// Gets or sets for the value of the constant.

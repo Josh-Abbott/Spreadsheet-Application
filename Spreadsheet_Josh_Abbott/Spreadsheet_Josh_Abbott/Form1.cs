@@ -12,6 +12,7 @@ namespace Spreadsheet_Josh_Abbott
     using System.Windows.Forms;
     using SpreadsheetEngine;
     using static System.Net.Mime.MediaTypeNames;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
     /// <summary>
     /// A class for functions for the Form1 WinForm.
@@ -171,7 +172,8 @@ namespace Spreadsheet_Josh_Abbott
         private void ChangeBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
-            Stack<Cell> cells = new Stack<Cell>();
+            Dictionary<Cell, uint> oldColors = new Dictionary<Cell, uint>();
+            Dictionary<Cell, uint> newColors = new Dictionary<Cell, uint>();
 
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
@@ -180,49 +182,22 @@ namespace Spreadsheet_Josh_Abbott
                     Cell? dCell = this.spreadsheet.GetCell(gCell.RowIndex, gCell.ColumnIndex);
                     if (dCell != null)
                     {
-                        cells.Push(dCell);
+                        oldColors[dCell] = dCell.BGColor;
+                        newColors[dCell] = (uint)colorDialog.Color.ToArgb();
                         dCell.BGColor = (uint)colorDialog.Color.ToArgb();
                     }
                 }
+
+                this.spreadsheet.AddUndo(new BGColorEditAction(oldColors, newColors));
             }
         }
 
-        /// <summary>
-        /// Undoes any recent background color changes when selected.
-        /// </summary>
-        /// <param name="sender">The object being sent.</param>
-        /// <param name="e">The event.</param>
-        private void UndoBackgroundColorChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UndoToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             this.spreadsheet.Undo();
         }
 
-        /// <summary>
-        /// Redoes any recent background color changes when selected.
-        /// </summary>
-        /// <param name="sender">The object being sent.</param>
-        /// <param name="e">The event.</param>
-        private void RedoBackgroundColorChangeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.spreadsheet.Redo();
-        }
-
-        /// <summary>
-        /// Undoes any recent background text changes when selected.
-        /// </summary>
-        /// <param name="sender">The object being sent.</param>
-        /// <param name="e">The event.</param>
-        private void UndoTextChangeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.spreadsheet.Undo();
-        }
-
-        /// <summary>
-        /// Redoes any recent background text changes when selected.
-        /// </summary>
-        /// <param name="sender">The object being sent.</param>
-        /// <param name="e">The event.</param>
-        private void RedoTextChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void RedoToolStripMenuItem_Click_(object sender, EventArgs e)
         {
             this.spreadsheet.Redo();
         }

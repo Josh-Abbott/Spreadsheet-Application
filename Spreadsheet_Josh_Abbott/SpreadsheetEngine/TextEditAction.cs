@@ -9,28 +9,23 @@ namespace SpreadsheetEngine
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Threading.Tasks.Sources;
+    using static SpreadsheetEngine.Spreadsheet;
 
     /// <summary>
     /// A concrete class to hold the text editing action.
     /// </summary>
-    public class TextEditAction : IEditAction
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TextEditAction"/> class.
+    /// </remarks>
+    /// <param name="cell">The cell being edited.</param>
+    /// <param name="oldText">The old text in the cell.</param>
+    /// <param name="newText">The new text in the cell.</param>
+    public class TextEditAction(Cell cell, string oldText, string newText) : IEditAction
     {
-        private Cell cell;
-        private string oldText;
-        private string newText;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextEditAction"/> class.
-        /// </summary>
-        /// <param name="cell">The cell being edited.</param>
-        /// <param name="oldText">The old text in the cell.</param>
-        /// <param name="newText">The new text in the cell.</param>
-        public TextEditAction(Cell cell, string oldText, string newText)
-        {
-            this.cell = cell;
-            this.oldText = oldText;
-            this.newText = newText;
-        }
+        private Cell cell = cell;
+        private string oldText = oldText;
+        private string newText = newText;
 
         /// <summary>
         /// Sets the cell's text to that of it's previous text.
@@ -46,6 +41,15 @@ namespace SpreadsheetEngine
         public void Redo()
         {
             this.cell.Text = this.newText;
+        }
+
+        /// <summary>
+        /// Returns the action description for this edit option.
+        /// </summary>
+        /// <returns>A string containing the action description.</returns>
+        public string GetActDesc()
+        {
+            return "Text change";
         }
     }
 }

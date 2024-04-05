@@ -24,5 +24,11 @@ namespace SpreadsheetEngine
         /// The undo action for editing.
         /// </summary>
         void Undo();
+
+        /// <summary>
+        /// Get the description for an action.
+        /// </summary>
+        /// <returns>The action description.</returns>
+        string GetActDesc();
     }
 }

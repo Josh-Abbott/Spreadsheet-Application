@@ -33,7 +33,7 @@ namespace SpreadsheetEngine
         /// </summary>
         public void Undo()
         {
-            if (this.undoActions.Count > 0)
+            if (this.CanUndo())
             {
                 IEditAction act = this.undoActions.Pop();
                 act.Undo();
@@ -46,12 +46,30 @@ namespace SpreadsheetEngine
         /// </summary>
         public void Redo()
         {
-            if (this.redoActions.Count > 0)
+            if (this.CanRedo())
             {
                 IEditAction act = this.redoActions.Pop();
                 act.Redo();
                 this.undoActions.Push(act);
             }
+        }
+
+        /// <summary>
+        /// Determines if the undo action can be performed.
+        /// </summary>
+        /// <returns>A boolean value of if it can be used or not.</returns>
+        public bool CanUndo()
+        {
+            return this.undoActions.Count > 0;
+        }
+
+        /// <summary>
+        /// Determines if the redo action can be performed.
+        /// </summary>
+        /// <returns>A boolean value of if it can be used or not.</returns>
+        public bool CanRedo()
+        {
+            return this.redoActions.Count > 0;
         }
     }
 }
