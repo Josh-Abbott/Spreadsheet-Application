@@ -175,8 +175,10 @@ namespace Spreadsheet_Josh_Abbott
             Dictionary<Cell, uint> oldColors = new Dictionary<Cell, uint>();
             Dictionary<Cell, uint> newColors = new Dictionary<Cell, uint>();
 
+            // Opens dialog for user.
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
+                // Loops through selected cells to set them.
                 foreach (DataGridViewCell gCell in this.dataGridView1.SelectedCells)
                 {
                     Cell? dCell = this.spreadsheet.GetCell(gCell.RowIndex, gCell.ColumnIndex);
@@ -192,11 +194,21 @@ namespace Spreadsheet_Josh_Abbott
             }
         }
 
+        /// <summary>
+        /// Undoes the most recent action.
+        /// </summary>
+        /// <param name="sender">The object.</param>
+        /// <param name="e">The event.</param>
         private void UndoToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             this.spreadsheet.Undo();
         }
 
+        /// <summary>
+        /// Redoes the most recent action.
+        /// </summary>
+        /// <param name="sender">The object.</param>
+        /// <param name="e">The event.</param>
         private void RedoToolStripMenuItem_Click_(object sender, EventArgs e)
         {
             this.spreadsheet.Redo();
