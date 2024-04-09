@@ -7,6 +7,7 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading.Tasks;
     using System.Threading.Tasks.Sources;
@@ -19,13 +20,21 @@ namespace SpreadsheetEngine
     /// Initializes a new instance of the <see cref="TextEditAction"/> class.
     /// </remarks>
     /// <param name="cell">The cell being edited.</param>
-    /// <param name="oldText">The old text in the cell.</param>
-    /// <param name="newText">The new text in the cell.</param>
-    public class TextEditAction(Cell cell, string oldText, string newText) : IEditAction
+    public class TextEditAction(Cell cell) : IEditAction
     {
-        private Cell cell = cell;
-        private string oldText = oldText;
-        private string newText = newText;
+        private readonly Cell cell = cell;
+        private string oldText = string.Empty;
+        private string newText = string.Empty;
+
+        /// <summary>
+        /// Modifies the oldText and newText values.
+        /// </summary>
+        /// <param name="newText">The updated new text.</param>
+        public void AddChange(string newText)
+        {
+            this.oldText = this.cell.Text;
+            this.newText = newText;
+        }
 
         /// <summary>
         /// Sets the cell's text to that of it's previous text.

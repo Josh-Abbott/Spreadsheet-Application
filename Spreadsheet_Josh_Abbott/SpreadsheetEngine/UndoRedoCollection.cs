@@ -71,5 +71,37 @@ namespace SpreadsheetEngine
         {
             return this.redoActions.Count > 0;
         }
+
+        /// <summary>
+        /// Gets the current undo action.
+        /// </summary>
+        /// <returns>The current undo action.</returns>
+        public IEditAction GetUndoAction()
+        {
+            if (this.CanUndo())
+            {
+                return this.undoActions.Peek();
+            }
+            else
+            {
+                throw new InvalidOperationException("There are no actions to redo!");
+            }
+        }
+
+        /// <summary>
+        /// Gets the current redo action.
+        /// </summary>
+        /// <returns>The current redo action.</returns>
+        public IEditAction GetRedoAction()
+        {
+            if (this.CanRedo())
+            {
+                return this.redoActions.Peek();
+            }
+            else
+            {
+                throw new InvalidOperationException("There are no actions to redo!");
+            }
+        }
     }
 }

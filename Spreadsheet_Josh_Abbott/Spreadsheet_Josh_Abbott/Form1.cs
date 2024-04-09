@@ -35,6 +35,9 @@ namespace Spreadsheet_Josh_Abbott
 
             this.dataGridView1.CellBeginEdit += this.Spreadsheet_CellBeginEdit;
             this.dataGridView1.CellEndEdit += this.Spreadsheet_CellEndEdit;
+
+            this.undoToolStripMenuItem.Enabled = false;
+            this.redoToolStripMenuItem.Enabled = false;
         }
 
         /// <summary>
@@ -149,8 +152,14 @@ namespace Spreadsheet_Josh_Abbott
             Cell? cell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
             if (cell != null)
             {
+                // Setup functionality for text undoing and redoing
                 string text = this.dataGridView1[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
+                var textEditAction = new TextEditAction(cell);
+                textEditAction.AddChange(text);
+                this.spreadsheet.AddUndo(textEditAction);
                 cell.Text = text;
+
+                this.UpdateUndoRedoButtons();
             }
         }
 
@@ -191,6 +200,7 @@ namespace Spreadsheet_Josh_Abbott
                 }
 
                 this.spreadsheet.AddUndo(new BGColorEditAction(oldColors, newColors));
+                this.UpdateUndoRedoButtons();
             }
         }
 
@@ -202,6 +212,7 @@ namespace Spreadsheet_Josh_Abbott
         private void UndoToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             this.spreadsheet.Undo();
+            this.UpdateUndoRedoButtons();
         }
 
         /// <summary>
@@ -212,6 +223,37 @@ namespace Spreadsheet_Josh_Abbott
         private void RedoToolStripMenuItem_Click_(object sender, EventArgs e)
         {
             this.spreadsheet.Redo();
+            this.UpdateUndoRedoButtons();
+        }
+
+        /// <summary>
+        /// Update the text and status of both buttons to reflect current actions.
+        /// </summary>
+        private void UpdateUndoRedoButtons()
+        {
+            // Update Undo button
+            if (this.spreadsheet.CanUndo())
+            {
+                this.undoToolStripMenuItem.Enabled = true;
+                this.undoToolStripMenuItem.Text = "Undo " + this.spreadsheet.GetUndoActionDescription();
+            }
+            else
+            {
+                this.undoToolStripMenuItem.Enabled = false;
+                this.undoToolStripMenuItem.Text = "Undo";
+            }
+
+            // Update Redo button
+            if (this.spreadsheet.CanRedo())
+            {
+                this.redoToolStripMenuItem.Enabled = true;
+                this.redoToolStripMenuItem.Text = "Redo " + this.spreadsheet.GetRedoActionDescription();
+            }
+            else
+            {
+                this.redoToolStripMenuItem.Enabled = false;
+                this.redoToolStripMenuItem.Text = "Redo";
+            }
         }
     }
 }

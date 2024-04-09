@@ -121,8 +121,17 @@ namespace SpreadsheetEngine.Tests
 
             if (cell != null)
             {
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
+
                 Assert.That(cell.Text, Is.EqualTo(string.Empty)); // Assuming empty cell
+
+                // Simulate a text edit change
+                var textEditAction = new TextEditAction(cell);
+                textEditAction.AddChange("Hello");
+                spreadsheet.AddUndo(textEditAction);
+
                 cell.Text = "Hello";
+                spreadsheet.OnCellPropertyChanged(cell, new PropertyChangedEventArgs("Text"));
 
                 spreadsheet.Undo();
                 Assert.That(cell.Text, Is.EqualTo(string.Empty));
@@ -144,21 +153,29 @@ namespace SpreadsheetEngine.Tests
 
             if (cell1 != null && cell2 != null)
             {
-                cell1.Text = "Hello";
-                cell2.Text = "Hi";
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
+
+                // Simulate text edit changes
+                var textEditAction1 = new TextEditAction(cell1);
+                textEditAction1.AddChange("Hello");
+                spreadsheet.AddUndo(textEditAction1);
+
+                var textEditAction2 = new TextEditAction(cell2);
+                textEditAction2.AddChange("Hi");
+                spreadsheet.AddUndo(textEditAction2);
 
                 spreadsheet.Undo();
                 spreadsheet.Undo();
                 Assert.Multiple(() =>
                 {
                     Assert.That(cell1.Text, Is.EqualTo(string.Empty));
-                    Assert.That(cell2.Text, Is.EqualTo("Hi"));
+                    Assert.That(cell2.Text, Is.EqualTo(string.Empty));
                 });
                 spreadsheet.Redo();
                 Assert.That(cell1.Text, Is.EqualTo("Hello"));
 
                 spreadsheet.Redo();
-                Assert.That(cell2.Text, Is.EqualTo(string.Empty));
+                Assert.That(cell2.Text, Is.EqualTo("Hi"));
             }
         }
 
