@@ -189,5 +189,68 @@ namespace SpreadsheetEngine.Tests
 
             Assert.Throws<InvalidOperationException>(() => spreadsheet.Undo());
         }
+
+        /// <summary>
+        /// An normal case for testing both the save and load functionality for a spreadsheet.
+        /// </summary>
+        [Test]
+        public void SaveLoadNorm()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell1 = spreadsheet.GetCell(0, 0);
+            var cell2 = spreadsheet.GetCell(1, 1);
+            if (cell1 != null && cell2 != null)
+            {
+                cell1.Text = "Hello";
+                cell2.Text = "=A1+10";
+            }
+
+            string filePath = "test_normal.xml";
+            spreadsheet.Save(filePath);
+
+            spreadsheet.Clear();
+
+            spreadsheet.Load(filePath);
+
+            Assert.That(spreadsheet.GetCell(0, 0)?.Text, Is.EqualTo("Hello"));
+            Assert.That(spreadsheet.GetCell(1, 1)?.Text, Is.EqualTo("=A1+10"));
+        }
+
+        /// <summary>
+        /// An edge case for testing both the save and load functionality for a spreadsheet.
+        /// </summary>
+        [Test]
+        public void SaveLoadEdge()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+
+            string filePath = "test_empty.xml";
+            spreadsheet.Save(filePath);
+
+            spreadsheet.Clear();
+
+            spreadsheet.Load(filePath);
+
+            for (int row = 0; row < 5; row++)
+            {
+                for (int column = 0; column < 5; column++)
+                {
+                    Assert.That(spreadsheet.GetCell(row, column)?.Text, Is.EqualTo(string.Empty));
+                }
+            }
+        }
+
+        /// <summary>
+        /// An exception case for testing both the save and load functionality for a spreadsheet.
+        /// </summary>
+        [Test]
+        public void SaveLoadExcep()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+
+            string filePath = "fake_file.xml";
+
+            Assert.Throws<FileNotFoundException>(() => spreadsheet.Load(filePath));
+        }
     }
 }
