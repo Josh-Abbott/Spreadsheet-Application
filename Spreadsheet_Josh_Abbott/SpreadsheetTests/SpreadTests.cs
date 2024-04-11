@@ -206,11 +206,17 @@ namespace SpreadsheetEngine.Tests
             }
 
             string filePath = "test_normal.xml";
-            spreadsheet.Save(filePath);
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                spreadsheet.Save(fileStream);
+            }
 
             spreadsheet.Clear();
 
-            spreadsheet.Load(filePath);
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                spreadsheet.Load(fileStream);
+            }
 
             Assert.That(spreadsheet.GetCell(0, 0)?.Text, Is.EqualTo("Hello"));
             Assert.That(spreadsheet.GetCell(1, 1)?.Text, Is.EqualTo("=A1+10"));
@@ -225,11 +231,17 @@ namespace SpreadsheetEngine.Tests
             var spreadsheet = new Spreadsheet(5, 5);
 
             string filePath = "test_empty.xml";
-            spreadsheet.Save(filePath);
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                spreadsheet.Save(fileStream);
+            }
 
             spreadsheet.Clear();
 
-            spreadsheet.Load(filePath);
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                spreadsheet.Load(fileStream);
+            }
 
             for (int row = 0; row < 5; row++)
             {
@@ -250,7 +262,10 @@ namespace SpreadsheetEngine.Tests
 
             string filePath = "fake_file.xml";
 
-            Assert.Throws<FileNotFoundException>(() => spreadsheet.Load(filePath));
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                Assert.Throws<InvalidDataException>(() => spreadsheet.Load(fileStream));
+            }
         }
     }
 }
