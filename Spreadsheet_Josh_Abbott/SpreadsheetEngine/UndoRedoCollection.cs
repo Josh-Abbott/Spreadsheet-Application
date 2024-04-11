@@ -103,5 +103,14 @@ namespace SpreadsheetEngine
                 throw new InvalidOperationException("There are no actions to redo!");
             }
         }
+
+        /// <summary>
+        /// Clears both of the undo and redo stacks.
+        /// </summary>
+        public void Clear()
+        {
+            this.undoActions.Clear();
+            this.redoActions.Clear();
+        }
     }
 }

@@ -9,6 +9,9 @@ namespace SpreadsheetEngine
 {
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.IO;
+    using System.Xml;
+    using System.Xml.Serialization;
     using System.Xml.Xsl;
 
     /// <summary>
@@ -304,21 +307,78 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Clears the spreadsheet GUI and undo/redo stacks by setting back to defaults.
+        /// </summary>
+        public void Clear()
+        {
+            if (this.spreadsheet != null)
+            {
+                for (int row = 0; row < this.rowCount; row++)
+                {
+                    for (int column = 0; column < this.columnCount; column++)
+                    {
+                        Cell cell = this.spreadsheet[row, column];
+                        if (cell != null)
+                        {
+                            cell.Text = string.Empty;
+                            cell.BGColor = 0xFFFFFFFF;
+                            cell.Value = string.Empty;
+                        }
+                    }
+                }
+            }
+
+            this.undoRedo.Clear();
+        }
+
+        /// <summary>
+        /// Determines if a specific cell is the default values or not.
+        /// </summary>
+        /// <param name="cell">The cell being checked.</param>
+        /// <returns>Whether or not it's default.</returns>
+        private bool IsDefaultCell(Cell cell)
+        {
+            return cell.BGColor == 0xFFFFFFFF && string.IsNullOrEmpty(cell.Text);
+        }
+
+        /// <summary>
         /// Save the spreadsheet information to an XML file.
         /// </summary>
         /// <param name="outfile">The file being saved to.</param>
-        public void Save(Stream outfile)
+        public void Save(FileStream outfile)
         {
+            using (XmlWriter writer = XmlWriter.Create(outfile))
+            {
+                writer.WriteStartElement("spreadsheet");
+                for (int row = 0; row < this.rowCount; row++)
+                {
+                    for (int column = 0; column < this.columnCount; column++)
+                    {
+                        if (this.spreadsheet != null)
+                        {
+                            Cell cell = this.spreadsheet[row, column];
+                            
+                        }
+                    }
+                }
 
+                writer.WriteEndElement();
+            }
         }
 
         /// <summary>
         /// Load the spreadsheet information from an XML file.
         /// </summary>
         /// <param name="infile">The file being loaded from.</param>
-        public void Load(Stream infile)
+        public void Load(FileStream infile)
         {
+            this.Clear();
+            this.undoRedo.Clear();
 
+            using (XmlReader reader = XmlReader.Create(infile))
+            {
+
+            }
         }
     }
 }
