@@ -255,5 +255,25 @@ namespace Spreadsheet_Josh_Abbott
                 this.redoToolStripMenuItem.Text = "Redo";
             }
         }
+
+        /// <summary>
+        /// Saves the current spreadsheet file using XML.
+        /// </summary>
+        /// <param name="sender">The object.</param>
+        /// <param name="e">The event.</param>
+        private void SaveFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Loads a selected spreadsheet file using XML.
+        /// </summary>
+        /// <param name="sender">The object.</param>
+        /// <param name="e">The event.</param>
+        private void LoadFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

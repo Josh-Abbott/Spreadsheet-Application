@@ -41,6 +41,8 @@
             redoToolStripMenuItem = new ToolStripMenuItem();
             cellToolStripMenuItem = new ToolStripMenuItem();
             changeBackgroundColorToolStripMenuItem = new ToolStripMenuItem();
+            saveFileToolStripMenuItem = new ToolStripMenuItem();
+            loadFileToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -97,7 +99,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runDemoToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runDemoToolStripMenuItem, saveFileToolStripMenuItem, loadFileToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -105,7 +107,7 @@
             // runDemoToolStripMenuItem
             // 
             runDemoToolStripMenuItem.Name = "runDemoToolStripMenuItem";
-            runDemoToolStripMenuItem.Size = new Size(162, 26);
+            runDemoToolStripMenuItem.Size = new Size(224, 26);
             runDemoToolStripMenuItem.Text = "Run Demo";
             runDemoToolStripMenuItem.Click += RunDemoToolStripMenuItem_Click;
             // 
@@ -144,6 +146,20 @@
             changeBackgroundColorToolStripMenuItem.Text = "Change background color...";
             changeBackgroundColorToolStripMenuItem.Click += ChangeBackgroundColorToolStripMenuItem_Click;
             // 
+            // saveFileToolStripMenuItem
+            // 
+            saveFileToolStripMenuItem.Name = "saveFileToolStripMenuItem";
+            saveFileToolStripMenuItem.Size = new Size(224, 26);
+            saveFileToolStripMenuItem.Text = "Save File";
+            saveFileToolStripMenuItem.Click += SaveFileToolStripMenuItem_Click;
+            // 
+            // loadFileToolStripMenuItem
+            // 
+            loadFileToolStripMenuItem.Name = "loadFileToolStripMenuItem";
+            loadFileToolStripMenuItem.Size = new Size(224, 26);
+            loadFileToolStripMenuItem.Text = "Load File";
+            loadFileToolStripMenuItem.Click += LoadFileToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -176,5 +192,7 @@
         private ToolStripMenuItem changeBackgroundColorToolStripMenuItem;
         private ToolStripMenuItem undoToolStripMenuItem;
         private ToolStripMenuItem redoToolStripMenuItem;
+        private ToolStripMenuItem saveFileToolStripMenuItem;
+        private ToolStripMenuItem loadFileToolStripMenuItem;
     }
 }
