@@ -263,7 +263,27 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The event.</param>
         private void SaveFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
 
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (FileStream fileStream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                        {
+                            this.spreadsheet.Save(fileStream);
+                        }
+
+                        MessageBox.Show("File saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         /// <summary>

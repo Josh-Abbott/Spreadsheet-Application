@@ -350,14 +350,26 @@ namespace SpreadsheetEngine
             using (XmlWriter writer = XmlWriter.Create(outfile))
             {
                 writer.WriteStartElement("spreadsheet");
+
+                // Loop through the entire spreadsheet
                 for (int row = 0; row < this.rowCount; row++)
                 {
                     for (int column = 0; column < this.columnCount; column++)
                     {
                         if (this.spreadsheet != null)
                         {
+                            // Get the cell and determine if it's worth saving or not
                             Cell cell = this.spreadsheet[row, column];
-                            
+                            if (!this.IsDefaultCell(cell))
+                            {
+                                writer.WriteStartElement("cell");
+                                writer.WriteAttributeString("name", $"{((char)('A' + column)).ToString()}{row + 1}");
+
+                                writer.WriteElementString("bgcolor", cell.BGColor.ToString());
+                                writer.WriteElementString("text", cell.Text);
+
+                                writer.WriteEndElement();
+                            }
                         }
                     }
                 }

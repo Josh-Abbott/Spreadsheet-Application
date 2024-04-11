@@ -36,13 +36,13 @@
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             runDemoToolStripMenuItem = new ToolStripMenuItem();
+            loadFileToolStripMenuItem = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
             undoToolStripMenuItem = new ToolStripMenuItem();
             redoToolStripMenuItem = new ToolStripMenuItem();
             cellToolStripMenuItem = new ToolStripMenuItem();
             changeBackgroundColorToolStripMenuItem = new ToolStripMenuItem();
             saveFileToolStripMenuItem = new ToolStripMenuItem();
-            loadFileToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -99,7 +99,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runDemoToolStripMenuItem, saveFileToolStripMenuItem, loadFileToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runDemoToolStripMenuItem, loadFileToolStripMenuItem, saveFileToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -111,6 +111,13 @@
             runDemoToolStripMenuItem.Text = "Run Demo";
             runDemoToolStripMenuItem.Click += RunDemoToolStripMenuItem_Click;
             // 
+            // loadFileToolStripMenuItem
+            // 
+            loadFileToolStripMenuItem.Name = "loadFileToolStripMenuItem";
+            loadFileToolStripMenuItem.Size = new Size(224, 26);
+            loadFileToolStripMenuItem.Text = "Load File";
+            loadFileToolStripMenuItem.Click += LoadFileToolStripMenuItem_Click;
+            // 
             // editToolStripMenuItem
             // 
             editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { undoToolStripMenuItem, redoToolStripMenuItem });
@@ -121,14 +128,14 @@
             // undoToolStripMenuItem
             // 
             undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            undoToolStripMenuItem.Size = new Size(224, 26);
+            undoToolStripMenuItem.Size = new Size(128, 26);
             undoToolStripMenuItem.Text = "Undo";
             undoToolStripMenuItem.Click += UndoToolStripMenuItem_Click_1;
             // 
             // redoToolStripMenuItem
             // 
             redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            redoToolStripMenuItem.Size = new Size(224, 26);
+            redoToolStripMenuItem.Size = new Size(128, 26);
             redoToolStripMenuItem.Text = "Redo";
             redoToolStripMenuItem.Click += RedoToolStripMenuItem_Click_;
             // 
@@ -152,13 +159,6 @@
             saveFileToolStripMenuItem.Size = new Size(224, 26);
             saveFileToolStripMenuItem.Text = "Save File";
             saveFileToolStripMenuItem.Click += SaveFileToolStripMenuItem_Click;
-            // 
-            // loadFileToolStripMenuItem
-            // 
-            loadFileToolStripMenuItem.Name = "loadFileToolStripMenuItem";
-            loadFileToolStripMenuItem.Size = new Size(224, 26);
-            loadFileToolStripMenuItem.Text = "Load File";
-            loadFileToolStripMenuItem.Click += LoadFileToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -192,7 +192,7 @@
         private ToolStripMenuItem changeBackgroundColorToolStripMenuItem;
         private ToolStripMenuItem undoToolStripMenuItem;
         private ToolStripMenuItem redoToolStripMenuItem;
-        private ToolStripMenuItem saveFileToolStripMenuItem;
         private ToolStripMenuItem loadFileToolStripMenuItem;
+        private ToolStripMenuItem saveFileToolStripMenuItem;
     }
 }
