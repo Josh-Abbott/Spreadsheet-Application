@@ -302,5 +302,23 @@ namespace SpreadsheetEngine
 
             return "Redo";
         }
+
+        /// <summary>
+        /// Save the spreadsheet information to an XML file.
+        /// </summary>
+        /// <param name="outfile">The file being saved to.</param>
+        public void Save(Stream outfile)
+        {
+
+        }
+
+        /// <summary>
+        /// Load the spreadsheet information from an XML file.
+        /// </summary>
+        /// <param name="infile">The file being loaded from.</param>
+        public void Load(Stream infile)
+        {
+
+        }
     }
 }

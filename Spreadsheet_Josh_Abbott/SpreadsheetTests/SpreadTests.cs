@@ -218,8 +218,11 @@ namespace SpreadsheetEngine.Tests
                 spreadsheet.Load(fileStream);
             }
 
-            Assert.That(spreadsheet.GetCell(0, 0)?.Text, Is.EqualTo("Hello"));
-            Assert.That(spreadsheet.GetCell(1, 1)?.Text, Is.EqualTo("=A1+10"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(spreadsheet.GetCell(0, 0)?.Text, Is.EqualTo("Hello"));
+                Assert.That(spreadsheet.GetCell(1, 1)?.Text, Is.EqualTo("=A1+10"));
+            });
         }
 
         /// <summary>
@@ -262,10 +265,8 @@ namespace SpreadsheetEngine.Tests
 
             string filePath = "fake_file.xml";
 
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
-            {
-                Assert.Throws<InvalidDataException>(() => spreadsheet.Load(fileStream));
-            }
+            using FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            Assert.Throws<InvalidDataException>(() => spreadsheet.Load(fileStream));
         }
     }
 }
