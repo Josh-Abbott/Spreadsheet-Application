@@ -293,7 +293,27 @@ namespace Spreadsheet_Josh_Abbott
         /// <param name="e">The event.</param>
         private void LoadFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
 
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (FileStream fileStream = new FileStream(openFileDialog.FileName, FileMode.Open))
+                        {
+                            this.spreadsheet.Load(fileStream);
+                        }
+
+                        MessageBox.Show("File loaded successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error loading file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
     }
 }

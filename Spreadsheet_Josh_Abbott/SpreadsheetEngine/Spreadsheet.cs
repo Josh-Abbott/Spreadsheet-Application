@@ -387,9 +387,52 @@ namespace SpreadsheetEngine
             this.Clear();
             this.undoRedo.Clear();
 
-            using (XmlReader reader = XmlReader.Create(infile))
+            if (this.spreadsheet != null)
             {
+                using (XmlReader reader = XmlReader.Create(infile))
+                {
+                    // Read through the contents of the XML file
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement() && reader.Name == "cell")
+                        {
+                            string cellName = reader.GetAttribute("name");
+                            if (cellName != null)
+                            {
+                                int col = cellName[0] - 'A';
+                                int row = int.Parse(cellName.Substring(1)) - 1;
 
+                                uint bgColor = 0xFFFFFFFF;
+                                string text = string.Empty;
+
+                                // Read through the contents of the cell
+                                while (reader.Read())
+                                {
+                                    if (reader.NodeType == XmlNodeType.Element)
+                                    {
+                                        if (reader.Name == "bgcolor")
+                                        {
+                                            reader.Read();
+                                            bgColor = uint.Parse(reader.Value);
+                                        }
+                                        else if (reader.Name == "text")
+                                        {
+                                            reader.Read();
+                                            text = reader.Value;
+                                        }
+                                    }
+                                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
+                                    {
+                                        // Set properties and exit loop at end of cell element
+                                        this.spreadsheet[row, col].BGColor = bgColor;
+                                        this.spreadsheet[row, col].Text = text;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
