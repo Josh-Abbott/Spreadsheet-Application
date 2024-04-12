@@ -332,50 +332,38 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Determines if a specific cell is the default values or not.
-        /// </summary>
-        /// <param name="cell">The cell being checked.</param>
-        /// <returns>Whether or not it's default.</returns>
-        private bool IsDefaultCell(Cell cell)
-        {
-            return cell.BGColor == 0xFFFFFFFF && string.IsNullOrEmpty(cell.Text);
-        }
-
-        /// <summary>
         /// Save the spreadsheet information to an XML file.
         /// </summary>
         /// <param name="outfile">The file being saved to.</param>
         public void Save(FileStream outfile)
         {
-            using (XmlWriter writer = XmlWriter.Create(outfile))
+            using XmlWriter writer = XmlWriter.Create(outfile);
+            writer.WriteStartElement("spreadsheet");
+
+            // Loop through the entire spreadsheet
+            for (int row = 0; row < this.rowCount; row++)
             {
-                writer.WriteStartElement("spreadsheet");
-
-                // Loop through the entire spreadsheet
-                for (int row = 0; row < this.rowCount; row++)
+                for (int column = 0; column < this.columnCount; column++)
                 {
-                    for (int column = 0; column < this.columnCount; column++)
+                    if (this.spreadsheet != null)
                     {
-                        if (this.spreadsheet != null)
+                        // Get the cell and determine if it's worth saving or not
+                        Cell cell = this.spreadsheet[row, column];
+                        if (!IsDefaultCell(cell))
                         {
-                            // Get the cell and determine if it's worth saving or not
-                            Cell cell = this.spreadsheet[row, column];
-                            if (!this.IsDefaultCell(cell))
-                            {
-                                writer.WriteStartElement("cell");
-                                writer.WriteAttributeString("name", $"{((char)('A' + column)).ToString()}{row + 1}");
+                            writer.WriteStartElement("cell");
+                            writer.WriteAttributeString("name", $"{((char)('A' + column)).ToString()}{row + 1}");
 
-                                writer.WriteElementString("bgcolor", cell.BGColor.ToString());
-                                writer.WriteElementString("text", cell.Text);
+                            writer.WriteElementString("bgcolor", cell.BGColor.ToString());
+                            writer.WriteElementString("text", cell.Text);
 
-                                writer.WriteEndElement();
-                            }
+                            writer.WriteEndElement();
                         }
                     }
                 }
-
-                writer.WriteEndElement();
             }
+
+            writer.WriteEndElement();
         }
 
         /// <summary>
@@ -384,56 +372,65 @@ namespace SpreadsheetEngine
         /// <param name="infile">The file being loaded from.</param>
         public void Load(FileStream infile)
         {
-            this.Clear();
             this.undoRedo.Clear();
 
             if (this.spreadsheet != null)
             {
-                using (XmlReader reader = XmlReader.Create(infile))
+                using XmlReader reader = XmlReader.Create(infile);
+
+                // Read through the contents of the XML file
+                while (reader.Read())
                 {
-                    // Read through the contents of the XML file
-                    while (reader.Read())
+                    if (reader.IsStartElement() && reader.Name == "cell")
                     {
-                        if (reader.IsStartElement() && reader.Name == "cell")
+                        string? cellName = reader.GetAttribute("name");
+                        if (cellName != null)
                         {
-                            string cellName = reader.GetAttribute("name");
-                            if (cellName != null)
+                            // Get the name of the cell
+                            int col = cellName[0] - 'A';
+                            int row = int.Parse(cellName.Substring(1)) - 1;
+
+                            uint bgColor = 0xFFFFFFFF;
+                            string text = string.Empty;
+
+                            // Read through the contents of the cell
+                            while (reader.Read())
                             {
-                                int col = cellName[0] - 'A';
-                                int row = int.Parse(cellName.Substring(1)) - 1;
-
-                                uint bgColor = 0xFFFFFFFF;
-                                string text = string.Empty;
-
-                                // Read through the contents of the cell
-                                while (reader.Read())
+                                if (reader.NodeType == XmlNodeType.Element)
                                 {
-                                    if (reader.NodeType == XmlNodeType.Element)
+                                    if (reader.Name == "bgcolor")
                                     {
-                                        if (reader.Name == "bgcolor")
-                                        {
-                                            reader.Read();
-                                            bgColor = uint.Parse(reader.Value);
-                                        }
-                                        else if (reader.Name == "text")
-                                        {
-                                            reader.Read();
-                                            text = reader.Value;
-                                        }
+                                        reader.Read();
+                                        bgColor = uint.Parse(reader.Value);
                                     }
-                                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
+                                    else if (reader.Name == "text")
                                     {
-                                        // Set properties and exit loop at end of cell element
-                                        this.spreadsheet[row, col].BGColor = bgColor;
-                                        this.spreadsheet[row, col].Text = text;
-                                        break;
+                                        reader.Read();
+                                        text = reader.Value;
                                     }
+                                }
+                                else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
+                                {
+                                    // Set properties and exit loop at end of cell element
+                                    this.spreadsheet[row, col].BGColor = bgColor;
+                                    this.spreadsheet[row, col].Text = text;
+                                    break;
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines if a specific cell is the default values or not.
+        /// </summary>
+        /// <param name="cell">The cell being checked.</param>
+        /// <returns>Whether or not it's default.</returns>
+        private static bool IsDefaultCell(Cell cell)
+        {
+            return cell.BGColor == 0xFFFFFFFF && string.IsNullOrEmpty(cell.Text);
         }
     }
 }

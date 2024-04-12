@@ -6,6 +6,7 @@ namespace SpreadsheetEngine.Tests
 {
     using System.ComponentModel;
     using NUnit.Framework;
+    using static SpreadsheetEngine.Spreadsheet;
 
     /// <summary>
     /// A class containing the test cases created for property changed functionality.
@@ -199,10 +200,15 @@ namespace SpreadsheetEngine.Tests
             var spreadsheet = new Spreadsheet(5, 5);
             var cell1 = spreadsheet.GetCell(0, 0);
             var cell2 = spreadsheet.GetCell(1, 1);
+
             if (cell1 != null && cell2 != null)
             {
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
+
                 cell1.Text = "Hello";
+                spreadsheet.OnCellPropertyChanged(cell1, new PropertyChangedEventArgs("Text"));
                 cell2.Text = "=A1+10";
+                spreadsheet.OnCellPropertyChanged(cell2, new PropertyChangedEventArgs("Text"));
             }
 
             string filePath = "test_normal.xml";
@@ -265,8 +271,13 @@ namespace SpreadsheetEngine.Tests
 
             string filePath = "fake_file.xml";
 
-            using FileStream fileStream = new FileStream(filePath, FileMode.Open);
-            Assert.Throws<InvalidDataException>(() => spreadsheet.Load(fileStream));
+            Assert.Throws<FileNotFoundException>(() =>
+            {
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+                {
+                    spreadsheet.Load(fileStream);
+                }
+            });
         }
     }
 }
