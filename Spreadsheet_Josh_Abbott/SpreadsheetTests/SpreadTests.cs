@@ -273,10 +273,8 @@ namespace SpreadsheetEngine.Tests
 
             Assert.Throws<FileNotFoundException>(() =>
             {
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
-                {
-                    spreadsheet.Load(fileStream);
-                }
+                using FileStream fileStream = new FileStream(filePath, FileMode.Open);
+                spreadsheet.Load(fileStream);
             });
         }
     }
