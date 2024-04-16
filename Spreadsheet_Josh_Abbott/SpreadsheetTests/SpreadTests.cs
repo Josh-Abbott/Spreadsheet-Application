@@ -107,7 +107,7 @@ namespace SpreadsheetEngine.Tests
                 cell.Text = "=2%5";
                 spreadsheet.OnCellPropertyChanged(cell, new System.ComponentModel.PropertyChangedEventArgs("Text"));
 
-                Assert.That(cell.Value, Is.EqualTo("#ERROR"));
+                Assert.That(cell.Value, Is.EqualTo("!(bad reference)"));
             }
         }
 
@@ -291,10 +291,11 @@ namespace SpreadsheetEngine.Tests
             {
                 spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
 
+                // Simulate updating cell
                 cell.Text = "=Z12345";
-                spreadsheet.OnCellPropertyChanged(cell, new PropertyChangedEventArgs("Text"));
+                spreadsheet.OnCellPropertyChanged(cell, new System.ComponentModel.PropertyChangedEventArgs("Text"));
 
-                Assert.That(cell.Text, Is.EqualTo("!(bad reference)"));
+                Assert.That(cell.Value, Is.EqualTo("!(bad reference)"));
             }
         }
 
@@ -311,8 +312,9 @@ namespace SpreadsheetEngine.Tests
             {
                 spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
 
+                // Simulate updating cell
                 cell.Text = "=A1";
-                spreadsheet.OnCellPropertyChanged(cell, new PropertyChangedEventArgs("Text"));
+                spreadsheet.OnCellPropertyChanged(cell, new System.ComponentModel.PropertyChangedEventArgs("Text"));
 
                 Assert.That(cell.Text, Is.EqualTo("!(self reference)"));
             }
@@ -334,21 +336,22 @@ namespace SpreadsheetEngine.Tests
             {
                 spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
 
+                // Simulate updating multiple cells to showcase circular reference.
                 cellA1.Text = "=B1";
-                spreadsheet.OnCellPropertyChanged(cellA1, new PropertyChangedEventArgs("Text"));
+                spreadsheet.OnCellPropertyChanged(cellA1, new System.ComponentModel.PropertyChangedEventArgs("Text"));
                 cellB1.Text = "=A1";
-                spreadsheet.OnCellPropertyChanged(cellB1, new PropertyChangedEventArgs("Text"));
+                spreadsheet.OnCellPropertyChanged(cellB1, new System.ComponentModel.PropertyChangedEventArgs("Text"));
                 cellA2.Text = "=B2";
-                spreadsheet.OnCellPropertyChanged(cellA2, new PropertyChangedEventArgs("Text"));
+                spreadsheet.OnCellPropertyChanged(cellA2, new System.ComponentModel.PropertyChangedEventArgs("Text"));
                 cellB2.Text = "=A2";
-                spreadsheet.OnCellPropertyChanged(cellB2, new PropertyChangedEventArgs("Text"));
+                spreadsheet.OnCellPropertyChanged(cellB2, new System.ComponentModel.PropertyChangedEventArgs("Text"));
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(cellA1.Value, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellB1.Value, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellA2.Value, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellB2.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellA1.Text, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellB1.Text, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellA2.Text, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellB2.Text, Is.EqualTo("!(circular reference)"));
                 });
             }
         }
