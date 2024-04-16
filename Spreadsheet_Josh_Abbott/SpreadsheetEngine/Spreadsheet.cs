@@ -380,55 +380,53 @@ namespace SpreadsheetEngine
                 uint currentBGColor = 0xFFFFFFFF;
                 string currentText = string.Empty;
 
-                using (XmlReader reader = XmlReader.Create(infile))
+                using XmlReader reader = XmlReader.Create(infile);
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    if (reader.IsStartElement() && reader.Name == "cell")
                     {
-                        if (reader.IsStartElement() && reader.Name == "cell")
+                        string? cellName = reader.GetAttribute("name");
+                        if (cellName != null)
                         {
-                            string? cellName = reader.GetAttribute("name");
-                            if (cellName != null)
+                            int col = cellName[0] - 'A';
+                            int row = int.Parse(cellName.Substring(1)) - 1;
+
+                            currentBGColor = 0xFFFFFFFF;
+                            currentText = string.Empty;
+
+                            while (reader.Read())
                             {
-                                int col = cellName[0] - 'A';
-                                int row = int.Parse(cellName.Substring(1)) - 1;
-
-                                currentBGColor = 0xFFFFFFFF;
-                                currentText = string.Empty;
-
-                                while (reader.Read())
+                                if (reader.NodeType == XmlNodeType.Element)
                                 {
-                                    if (reader.NodeType == XmlNodeType.Element)
+                                    switch (reader.Name)
                                     {
-                                        switch (reader.Name)
-                                        {
-                                            case "bgcolor":
-                                                readingBGColor = true;
-                                                break;
-                                            case "text":
-                                                readingBGColor = false;
-                                                break;
-                                        }
-                                    }
-                                    else if (reader.NodeType == XmlNodeType.Text)
-                                    {
-                                        if (readingBGColor)
-                                        {
-                                            currentBGColor = uint.Parse(reader.Value);
-                                        }
-                                        else
-                                        {
-                                            currentText = reader.Value;
-                                        }
-                                    }
-                                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
-                                    {
-                                        break;
+                                        case "bgcolor":
+                                            readingBGColor = true;
+                                            break;
+                                        case "text":
+                                            readingBGColor = false;
+                                            break;
                                     }
                                 }
-
-                                this.spreadsheet[row, col].BGColor = currentBGColor;
-                                this.spreadsheet[row, col].Text = currentText;
+                                else if (reader.NodeType == XmlNodeType.Text)
+                                {
+                                    if (readingBGColor)
+                                    {
+                                        currentBGColor = uint.Parse(reader.Value);
+                                    }
+                                    else
+                                    {
+                                        currentText = reader.Value;
+                                    }
+                                }
+                                else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
+                                {
+                                    break;
+                                }
                             }
+
+                            this.spreadsheet[row, col].BGColor = currentBGColor;
+                            this.spreadsheet[row, col].Text = currentText;
                         }
                     }
                 }

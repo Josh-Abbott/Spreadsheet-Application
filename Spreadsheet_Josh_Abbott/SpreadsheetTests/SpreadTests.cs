@@ -277,5 +277,80 @@ namespace SpreadsheetEngine.Tests
                 spreadsheet.Load(fileStream);
             });
         }
+
+        /// <summary>
+        /// A normal case for testing the non existent reference error catching for a spreadsheet.
+        /// </summary>
+        [Test]
+        public void ErrorNorm()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell = spreadsheet.GetCell(0, 0);
+
+            if (cell != null)
+            {
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
+
+                cell.Text = "=Z12345";
+                spreadsheet.OnCellPropertyChanged(cell, new PropertyChangedEventArgs("Text"));
+
+                Assert.That(cell.Text, Is.EqualTo("!(bad reference)"));
+            }
+        }
+
+        /// <summary>
+        /// An edge case for testing the self reference error catching for a spreadsheet.
+        /// </summary>
+        [Test]
+        public void ErrorEdge()
+        {
+            var spreadsheet = new Spreadsheet(5, 5);
+            var cell = spreadsheet.GetCell(0, 0);
+
+            if (cell != null)
+            {
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
+
+                cell.Text = "=A1";
+                spreadsheet.OnCellPropertyChanged(cell, new PropertyChangedEventArgs("Text"));
+
+                Assert.That(cell.Text, Is.EqualTo("!(self reference)"));
+            }
+        }
+
+        /// <summary>
+        /// An exception case for testing the circular reference error catching for a spreadsheet.
+        /// </summary>
+        [Test]
+        public void ExcepEdge()
+        {
+            var spreadsheet = new Spreadsheet(2, 2);
+            var cellA1 = spreadsheet.GetCell(0, 0);
+            var cellB1 = spreadsheet.GetCell(0, 1);
+            var cellA2 = spreadsheet.GetCell(1, 0);
+            var cellB2 = spreadsheet.GetCell(1, 1);
+
+            if (cellA1 != null && cellB1 != null && cellA2 != null && cellB2 != null)
+            {
+                spreadsheet.PropertyChanged += (s, e) => Assert.That(e.PropertyName, Is.EqualTo("Value"));
+
+                cellA1.Text = "=B1";
+                spreadsheet.OnCellPropertyChanged(cellA1, new PropertyChangedEventArgs("Text"));
+                cellB1.Text = "=A1";
+                spreadsheet.OnCellPropertyChanged(cellB1, new PropertyChangedEventArgs("Text"));
+                cellA2.Text = "=B2";
+                spreadsheet.OnCellPropertyChanged(cellA2, new PropertyChangedEventArgs("Text"));
+                cellB2.Text = "=A2";
+                spreadsheet.OnCellPropertyChanged(cellB2, new PropertyChangedEventArgs("Text"));
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(cellA1.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellB1.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellA2.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellB2.Value, Is.EqualTo("!(circular reference)"));
+                });
+            }
+        }
     }
 }
