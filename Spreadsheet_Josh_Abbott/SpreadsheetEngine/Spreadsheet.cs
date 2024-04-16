@@ -178,26 +178,31 @@ namespace SpreadsheetEngine
                         Cell? referencedCell = this.GetCell(row, col);
                         if (referencedCell != null)
                         {
+                            if (cell.Equals(referencedCell))
+                            {
+                                // Check for self reference
+                                cell.Value = "!(self reference)";
+                                return;
+                            }
+
                             if (double.TryParse(referencedCell.Value, out double value))
                             {
                                 expTree.SetVariable(varName, value);
                             }
                             else
                             {
-                                cell.Value = "!(self reference)";
+                                // Set the cell to 0 if referencing an empty cell
+                                cell.Value = "0";
                                 return;
                             }
 
-                            if (referencedCell != null)
+                            if (!this.dependencies.TryGetValue(referencedCell, out HashSet<Cell>? val))
                             {
-                                if (!this.dependencies.TryGetValue(referencedCell, out HashSet<Cell>? val))
-                                {
-                                    val = new HashSet<Cell>();
-                                    this.dependencies[referencedCell] = val;
-                                }
-
-                                val.Add(cell);
+                                val = new HashSet<Cell>();
+                                this.dependencies[referencedCell] = val;
                             }
+
+                            val.Add(cell);
                         }
                         else
                         {
@@ -211,7 +216,6 @@ namespace SpreadsheetEngine
                 }
                 catch (Exception)
                 {
-                    // Catch exceptions from expression evaluation
                     cell.Value = "!(bad reference)";
                 }
             }
