@@ -316,7 +316,7 @@ namespace SpreadsheetEngine.Tests
                 cell.Text = "=A1";
                 spreadsheet.OnCellPropertyChanged(cell, new System.ComponentModel.PropertyChangedEventArgs("Text"));
 
-                Assert.That(cell.Text, Is.EqualTo("!(self reference)"));
+                Assert.That(cell.Value, Is.EqualTo("!(self reference)"));
             }
         }
 
@@ -348,10 +348,10 @@ namespace SpreadsheetEngine.Tests
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(cellA1.Text, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellB1.Text, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellA2.Text, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellB2.Text, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellA1.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellB1.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellA2.Value, Is.EqualTo("!(circular reference)"));
+                    Assert.That(cellB2.Value, Is.EqualTo("!(circular reference)"));
                 });
             }
         }
