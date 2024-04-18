@@ -83,14 +83,21 @@ namespace SpreadsheetEngine
 
                         this.CalculateCell(cell);
 
+                        if (cell.Value == "!(bad reference)")
+                        {
+                            this.PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
+                            return;
+                        }
+
                         // Check for dependencies that need to be updated
                         if (this.dependencies.TryGetValue(cell, out HashSet<Cell>? value))
                         {
                             foreach (var dependentCell in value)
                             {
-                                if (cell.Value != "!(circular reference)")
+                                if (cell.Value != "!(circular reference)" && cell.Value != "!(self reference)" && cell.Value != "!(bad reference")
                                 {
                                     this.CalculateCell(dependentCell);
+                                    this.UpdateDependencies(dependentCell);
                                 }
                             }
                         }
@@ -108,7 +115,11 @@ namespace SpreadsheetEngine
                         {
                             foreach (var dependentCell in value)
                             {
-                                this.CalculateCell(dependentCell);
+                                if (cell.Value != "!(circular reference)" && cell.Value != "!(self reference)" && cell.Value != "!(bad reference")
+                                {
+                                    this.CalculateCell(dependentCell);
+                                    this.UpdateDependencies(dependentCell);
+                                }
                             }
                         }
                     }
@@ -197,6 +208,7 @@ namespace SpreadsheetEngine
                             }
                             else
                             {
+                                // Check if cell is empty initially
                                 cell.Value = "0";
                             }
 
@@ -396,6 +408,7 @@ namespace SpreadsheetEngine
                         string? cellName = reader.GetAttribute("name");
                         if (cellName != null)
                         {
+                            // Break down saved cell name into columns and rows
                             int col = cellName[0] - 'A';
                             int row = int.Parse(cellName.Substring(1)) - 1;
 
@@ -509,6 +522,26 @@ namespace SpreadsheetEngine
             visited.Remove(cell);
 
             return false;
+        }
+
+        /// <summary>
+        /// Recursively loop through all dependencies to update them.
+        /// </summary>
+        /// <param name="cell">The dependent cell.</param>
+        private void UpdateDependencies(Cell cell)
+        {
+            // Check for dependencies that need to be updated
+            if (this.dependencies.TryGetValue(cell, out HashSet<Cell>? dependents))
+            {
+                foreach (var dependentCell in dependents)
+                {
+                    if (cell.Value != "!(circular reference)" && cell.Value != "!(self reference)" && cell.Value != "!(bad reference")
+                    {
+                        this.CalculateCell(dependentCell);
+                        this.UpdateDependencies(dependentCell);
+                    }
+                }
+            }
         }
     }
 }

@@ -14,17 +14,12 @@ namespace SpreadsheetEngine
     /// <summary>
     /// A class for the parenthesis functionality of the operator node.
     /// </summary>
-    public class ParenthesisOpNode : OperatorNode
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ParenthesisOpNode"/> class.
+    /// </remarks>
+    /// <param name="op">The operator character.</param>
+    public class ParenthesisOpNode(char op) : OperatorNode(op)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ParenthesisOpNode"/> class.
-        /// </summary>
-        /// <param name="op">The operator character.</param>
-        public ParenthesisOpNode(char op)
-                   : base(op)
-        {
-        }
-
         /// <summary>
         /// Inherit the abstract evaluate function, although it is not applicable here.
         /// </summary>
