@@ -13,21 +13,15 @@ namespace SpreadsheetEngine
     /// <summary>
     /// A class for the variable node type.
     /// </summary>
-    public class VariableNode : Node
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="VariableNode"/> class.
+    /// </remarks>
+    /// <param name="name">The variable name.</param>
+    /// <param name="variables">The list of variables.</param>
+    public class VariableNode(string name, Dictionary<string, double> variables) : Node
     {
-        private string varName;
-        private Dictionary<string, double> vars = new Dictionary<string, double>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VariableNode"/> class.
-        /// </summary>
-        /// <param name="name">The variable name.</param>
-        /// <param name="variables">The list of variables.</param>
-        public VariableNode(string name, Dictionary<string, double> variables)
-        {
-            this.varName = name;
-            this.vars = variables;
-        }
+        private string varName = name;
+        private Dictionary<string, double> vars = variables;
 
         /// <summary>
         /// Gets or sets for the variable name.

@@ -84,12 +84,14 @@ namespace SpreadsheetEngine
                         this.CalculateCell(cell);
 
                         // Check for dependencies that need to be updated
-                        if (this.dependencies.ContainsKey(cell))
+                        if (this.dependencies.TryGetValue(cell, out HashSet<Cell>? value))
                         {
-                            foreach (var entry in this.dependencies)
+                            foreach (var dependentCell in value)
                             {
-                                Cell dependentCell = entry.Key;
-                                this.CalculateCell(dependentCell);
+                                if (cell.Value != "!(circular reference)")
+                                {
+                                    this.CalculateCell(dependentCell);
+                                }
                             }
                         }
                     }
@@ -102,11 +104,10 @@ namespace SpreadsheetEngine
                         cell.Value = cell.Text;
 
                         // Update dependencies
-                        if (this.dependencies.ContainsKey(cell))
+                        if (this.dependencies.TryGetValue(cell, out HashSet<Cell>? value))
                         {
-                            foreach (var entry in this.dependencies)
+                            foreach (var dependentCell in value)
                             {
-                                Cell dependentCell = entry.Key;
                                 this.CalculateCell(dependentCell);
                             }
                         }
@@ -168,10 +169,16 @@ namespace SpreadsheetEngine
                 {
                     // Create ExpressionTree and set variables
                     ExpTreeP expTree = new ExpTreeP(cell.Text.Substring(1));
-                    this.dependencies[cell] = new HashSet<Cell>();
+
+                    // Check for circular reference before updating dependencies
+                    if (this.HasCircularReference(cell, expTree))
+                    {
+                        cell.Value = "!(circular reference)";
+                        return;
+                    }
+
                     foreach (string varName in expTree.GetVariableNames())
                     {
-                        // Get the relevant parts from the formula
                         int col = varName[0] - 'A';
                         int row = int.Parse(varName.Substring(1)) - 1;
 
@@ -180,7 +187,6 @@ namespace SpreadsheetEngine
                         {
                             if (cell.Equals(referencedCell))
                             {
-                                // Check for self reference
                                 cell.Value = "!(self reference)";
                                 return;
                             }
@@ -191,9 +197,7 @@ namespace SpreadsheetEngine
                             }
                             else
                             {
-                                // Set the cell to 0 if referencing an empty cell
                                 cell.Value = "0";
-                                return;
                             }
 
                             if (!this.dependencies.TryGetValue(referencedCell, out HashSet<Cell>? val))
@@ -384,55 +388,53 @@ namespace SpreadsheetEngine
                 uint currentBGColor = 0xFFFFFFFF;
                 string currentText = string.Empty;
 
-                using (XmlReader reader = XmlReader.Create(infile))
+                using XmlReader reader = XmlReader.Create(infile);
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    if (reader.IsStartElement() && reader.Name == "cell")
                     {
-                        if (reader.IsStartElement() && reader.Name == "cell")
+                        string? cellName = reader.GetAttribute("name");
+                        if (cellName != null)
                         {
-                            string? cellName = reader.GetAttribute("name");
-                            if (cellName != null)
+                            int col = cellName[0] - 'A';
+                            int row = int.Parse(cellName.Substring(1)) - 1;
+
+                            currentBGColor = 0xFFFFFFFF;
+                            currentText = string.Empty;
+
+                            while (reader.Read())
                             {
-                                int col = cellName[0] - 'A';
-                                int row = int.Parse(cellName.Substring(1)) - 1;
-
-                                currentBGColor = 0xFFFFFFFF;
-                                currentText = string.Empty;
-
-                                while (reader.Read())
+                                if (reader.NodeType == XmlNodeType.Element)
                                 {
-                                    if (reader.NodeType == XmlNodeType.Element)
+                                    switch (reader.Name)
                                     {
-                                        switch (reader.Name)
-                                        {
-                                            case "bgcolor":
-                                                readingBGColor = true;
-                                                break;
-                                            case "text":
-                                                readingBGColor = false;
-                                                break;
-                                        }
-                                    }
-                                    else if (reader.NodeType == XmlNodeType.Text)
-                                    {
-                                        if (readingBGColor)
-                                        {
-                                            currentBGColor = uint.Parse(reader.Value);
-                                        }
-                                        else
-                                        {
-                                            currentText = reader.Value;
-                                        }
-                                    }
-                                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
-                                    {
-                                        break;
+                                        case "bgcolor":
+                                            readingBGColor = true;
+                                            break;
+                                        case "text":
+                                            readingBGColor = false;
+                                            break;
                                     }
                                 }
-
-                                this.spreadsheet[row, col].BGColor = currentBGColor;
-                                this.spreadsheet[row, col].Text = currentText;
+                                else if (reader.NodeType == XmlNodeType.Text)
+                                {
+                                    if (readingBGColor)
+                                    {
+                                        currentBGColor = uint.Parse(reader.Value);
+                                    }
+                                    else
+                                    {
+                                        currentText = reader.Value;
+                                    }
+                                }
+                                else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "cell")
+                                {
+                                    break;
+                                }
                             }
+
+                            this.spreadsheet[row, col].BGColor = currentBGColor;
+                            this.spreadsheet[row, col].Text = currentText;
                         }
                     }
                 }
@@ -447,6 +449,66 @@ namespace SpreadsheetEngine
         private static bool IsDefaultCell(Cell cell)
         {
             return cell.BGColor == 0xFFFFFFFF && string.IsNullOrEmpty(cell.Text);
+        }
+
+        /// <summary>
+        /// A helper function that creates a visited HashSet and then calls a function to determine if there is a circular reference.
+        /// </summary>
+        /// <param name="cell">The cell being checked.</param>
+        /// <param name="expTree">The expression tree.</param>
+        /// <returns>Returns if there exists a circular reference or not.</returns>
+        private bool HasCircularReference(Cell cell, ExpTreeP expTree)
+        {
+            var visited = new HashSet<Cell>();
+            return this.CheckCircularReference(cell, expTree, visited);
+        }
+
+        /// <summary>
+        /// Determines if there exists a circular reference or not.
+        /// </summary>
+        /// <param name="cell">The cell being looked at.</param>
+        /// <param name="expTree">The expression tree.</param>
+        /// <param name="visited">The hash of cells visited.</param>
+        /// <returns>Whether there exists a circular reference or not.</returns>
+        private bool CheckCircularReference(Cell cell, ExpTreeP expTree, HashSet<Cell> visited)
+        {
+            // Check for initial circular reference
+            if (visited.Contains(cell))
+            {
+                return true;
+            }
+
+            visited.Add(cell);
+
+            // Loop through spreadsheet to search for circular reference
+            foreach (string varName in expTree.GetVariableNames())
+            {
+                int col = varName[0] - 'A';
+                int row = int.Parse(varName.Substring(1)) - 1;
+
+                if (col >= 0 && col < this.columnCount && row >= 0 && row < this.rowCount)
+                {
+                    Cell? referencedCell = this.GetCell(row, col);
+                    if (referencedCell != null && referencedCell != cell)
+                    {
+                        // Verify that the cell is empty
+                        if (!string.IsNullOrEmpty(referencedCell.Text))
+                        {
+                            ExpTreeP referencedExpTree = new ExpTreeP(referencedCell.Text.Substring(1));
+
+                            // Verify if there is a circular reference
+                            if (this.CheckCircularReference(referencedCell, referencedExpTree, visited))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            visited.Remove(cell);
+
+            return false;
         }
     }
 }

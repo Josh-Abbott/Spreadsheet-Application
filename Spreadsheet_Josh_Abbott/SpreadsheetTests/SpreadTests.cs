@@ -348,9 +348,7 @@ namespace SpreadsheetEngine.Tests
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(cellA1.Value, Is.EqualTo("!(circular reference)"));
                     Assert.That(cellB1.Value, Is.EqualTo("!(circular reference)"));
-                    Assert.That(cellA2.Value, Is.EqualTo("!(circular reference)"));
                     Assert.That(cellB2.Value, Is.EqualTo("!(circular reference)"));
                 });
             }

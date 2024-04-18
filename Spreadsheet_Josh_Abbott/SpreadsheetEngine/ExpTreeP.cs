@@ -14,15 +14,11 @@ namespace SpreadsheetEngine
     /// <summary>
     /// A concrete class to be able to make use of the abstract expression tree.
     /// </summary>
-    public class ExpTreeP : ExpressionTree
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ExpTreeP"/> class.
+    /// </remarks>
+    /// <param name="expression">The expression string.</param>
+    public class ExpTreeP(string expression) : ExpressionTree(expression)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExpTreeP"/> class.
-        /// </summary>
-        /// <param name="expression">The expression string.</param>
-        public ExpTreeP(string expression)
-            : base(expression)
-        {
-        }
     }
 }

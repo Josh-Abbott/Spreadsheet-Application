@@ -13,22 +13,15 @@ namespace SpreadsheetEngine
     /// <summary>
     /// A class for the operators found in the expression.
     /// </summary>
-    public abstract class OperatorNode : Node
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="OperatorNode"/> class.
+    /// </remarks>
+    /// <param name="op">The operator character.</param>
+    public abstract class OperatorNode(char op) : Node
     {
-        private char? operation;
-        private Node? left;
-        private Node? right;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OperatorNode"/> class.
-        /// </summary>
-        /// <param name="op">The operator character.</param>
-        public OperatorNode(char op)
-        {
-            this.operation = op;
-            this.left = null;
-            this.right = null;
-        }
+        private char? operation = op;
+        private Node? left = null;
+        private Node? right = null;
 
         /// <summary>
         /// Gets or sets the assigned precedence value for each operation.
