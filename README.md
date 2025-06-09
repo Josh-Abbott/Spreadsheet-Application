@@ -1,4 +1,4 @@
-# CptS321-HWs
+# 321-HWs
 
 Josh Abbott
 
